@@ -19,7 +19,6 @@
 #define DISPLAY_TURN_OFF_VDD (PORTFSET = 0x40)
 #define DISPLAY_TURN_OFF_VBAT (PORTFSET = 0x20)
 
-
 /* quicksleep:
    A simple function to create a small delay.
    Very inefficient use of computing resources,
@@ -28,7 +27,6 @@ void quicksleep(int cyc) {
 	int i;
 	for(i = cyc; i > 0; i--);
 }
-
 
 /* Display stuff from here */
 uint8_t spi_send_recv(uint8_t data) {
@@ -82,9 +80,24 @@ void display_image(int x, const uint8_t *data) {
 		
 		DISPLAY_CHANGE_TO_DATA_MODE;
 		
-		for(j = 0; j < 32; j++)
-			spi_send_recv(~data[i*32 + j]);
+		for(j = 0; j < 128; j++)
+			spi_send_recv(~data[i*128 + j]);
 	}
+}
+
+void display_string(int line, char *s) {
+	int i;
+	if(line < 0 || line >= 4)
+		return;
+	if(!s)
+		return;
+	
+	for(i = 0; i < 16; i++)
+		if(*s) {
+			textbuffer[line][i] = *s;
+			s++;
+		} else
+			textbuffer[line][i] = ' ';
 }
 
 void display_update(void) {
@@ -109,4 +122,43 @@ void display_update(void) {
 				spi_send_recv(font[c*8 + k]);
 		}
 	}
+}
+
+
+
+/* ~~~ OUR STUFF BELOW THIS LINE ~~~ */
+char readArray(const uint8_t *target_array, const int index) {
+
+	unsigned int byte_index = index / 8;
+	unsigned int bit_index = index % 8;
+
+	return (target_array[byte_index] >> bit_index) & 0x01;
+}
+
+void writeArray(uint8_t *target_array, const int index, const int value) {
+
+	unsigned int byte_index = index / 8;
+	unsigned int bit_index = index % 8;
+
+	target_array[byte_index] &= ~(0x01 << bit_index);
+	target_array[byte_index] |= value << bit_index;
+}
+
+
+// Activates pixel in given buffer. x is between 0 and 127. y is between 0 and 31.
+void setPixel(uint8_t *target_array, const unsigned int x, const unsigned int y) {
+
+	int byte_index = ((y / 8) * 128 ) + x; // the byte in the buffer where the pixel resides
+	int bit_index  = y % 8; // the index of the bit within the byte where the pixel is represented
+
+	target_array[byte_index] &= ~(0x01 << bit_index);
+
+}
+
+// Deactivates pixel in given buffer. x is between 0 and 127. y is between 0 and 31.
+void clearPixel(uint8_t *target_array, const unsigned int x, const unsigned int y) {
+	int byte_index = ((y / 8) * 128 ) + x; // the byte in the buffer where the pixel resides
+	int bit_index  = y % 8; // the index of the bit within the byte where the pixel is represented
+
+	target_array[byte_index] |= 0x01 << bit_index;
 }

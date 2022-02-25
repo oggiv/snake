@@ -7,7 +7,6 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "project.h"
 
-
 char textbuffer[4][16];
 
 const uint8_t const font[] = {
@@ -140,3 +139,7 @@ const uint8_t const font[] = {
 	0, 0, 4, 2, 4, 2, 0, 0,
 	0, 120, 68, 66, 68, 120, 0, 0,
 };
+
+
+/* ~~~ OUR STUFF BELOW THIS LINE ~~~ */
+uint8_t gamebuffer[516];
