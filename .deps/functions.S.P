@@ -1,0 +1,2 @@
+functions.S.o: functions.S
+functions.S :
