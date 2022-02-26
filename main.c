@@ -46,7 +46,10 @@ int main() {
 	
 	display_init();
 	
-	uint8_t temp_val = 255;
+
+	/* ~~~ OUT STUFF BELOW THIS LINE ~~~ */
+
+	io_init();
 
 	int i;
 	for (i = 0; i < 516; i+=1) {
@@ -56,8 +59,13 @@ int main() {
 	display_image(0, gamebuffer);
 	display_string(0, "Test");
 
+	uint8_t apples = 170;
+	setleds(apples);
+
 	int x_pos = 0;
 	int y_pos = 0;
+
+	uint8_t direction = 0;
 
 	while (1) {
 		setPixel(gamebuffer, x_pos, y_pos);

@@ -148,8 +148,8 @@ void writeArray(uint8_t *target_array, const int index, const int value) {
 // Activates pixel in given buffer. x is between 0 and 127. y is between 0 and 31.
 void setPixel(uint8_t *target_array, const unsigned int x, const unsigned int y) {
 
-	int byte_index = ((y / 8) * 128 ) + x; // the byte in the buffer where the pixel resides
-	int bit_index  = y % 8; // the index of the bit within the byte where the pixel is represented
+	int byte_index = (((31 - y) / 8) * 128 ) + x; // the byte in the buffer where the pixel resides
+	int bit_index  = (31 - y) % 8; // the index of the bit within the byte where the pixel is represented
 
 	target_array[byte_index] &= ~(0x01 << bit_index);
 
@@ -157,8 +157,43 @@ void setPixel(uint8_t *target_array, const unsigned int x, const unsigned int y)
 
 // Deactivates pixel in given buffer. x is between 0 and 127. y is between 0 and 31.
 void clearPixel(uint8_t *target_array, const unsigned int x, const unsigned int y) {
-	int byte_index = ((y / 8) * 128 ) + x; // the byte in the buffer where the pixel resides
-	int bit_index  = y % 8; // the index of the bit within the byte where the pixel is represented
+
+	int byte_index = (((31 - y) / 8) * 128 ) + x; // the byte in the buffer where the pixel resides
+	int bit_index  = (31 - y) % 8; // the index of the bit within the byte where the pixel is represented
 
 	target_array[byte_index] |= 0x01 << bit_index;
+}
+
+void io_init(void) {
+	
+	TRISE &= 0xFFFFFF00; // Set LEDs to output
+	TRISD |= 0x00000FE0; // Set BTNs to input
+
+}
+
+int getbtns(void) {
+
+	/*
+		Function prototype: int getbtns(void);
+		Parameter: none.
+		Return value: The 4 least significant bits of the return value must contain current data from push buttons BTN4, BTN3, and BTN2. BTN2 corresponds to the least significant bit. All other bits of the return value must be zero.
+		Notes: The function getbtns will never be called before Port D has been correctly initialized. The buttons BTN4, BTN3, and BTN2, are connected to bits 7, 6 and 5 of Port D.
+
+				Pin 	Port
+		BTN1: 4		RF1
+		BTN2: 34 	RD5
+		BTN3:	36 	RD6
+		BTN4:	37 	RD7
+
+	 	0000 1110 = 0x0E
+	 	0000 0001 = 0x01
+
+	*/
+
+	return ((PORTD >> 4) & 0x0E) & (PORTF & 0x01);
+}
+
+void setleds(uint8_t led_value) {
+	/* Sets LEDs to represent the binary value of the given 'led_value' */
+	PORTE = (PORTE & 0xFFFFFF00) | led_value;
 }
