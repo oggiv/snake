@@ -47,37 +47,38 @@ int main() {
 	display_init();
 	
 
-	/* ~~~ OUT STUFF BELOW THIS LINE ~~~ */
+	/* ~~~ OUR STUFF BELOW THIS LINE ~~~ */
 
-	io_init();
+	ioinit();
+	clearBuffer(gamebuffer, 516);
 
 	int i;
-	for (i = 0; i < 516; i+=1) {
-		gamebuffer[i] = 255;
+	for (i = 0; i < 96; i++) {
+		setPixel(gamebuffer, i, 31);
+		setPixel(gamebuffer, i, 0);
+	}
+	for (i = 0; i < 32; i++) {
+		setPixel(gamebuffer, 0, i);
+		setPixel(gamebuffer, 95, i);
 	}
 
-	display_image(0, gamebuffer);
-	display_string(0, "Test");
+	display_image(gamebuffer, 0);
 
-	uint8_t apples = 170;
-	setleds(apples);
-
-	int x_pos = 0;
-	int y_pos = 0;
-
-	uint8_t direction = 0;
+	unsigned int x_pos = 0;
+	unsigned int y_pos = 0;
 
 	while (1) {
-		setPixel(gamebuffer, x_pos, y_pos);
-		display_image(0, gamebuffer);
 
-		quicksleep(600);
+		setBlock(gamebuffer, x_pos, y_pos);
+		display_image(gamebuffer, 0);
 
-		clearPixel(gamebuffer, x_pos, y_pos);
+		quicksleep(800000);
 
-		if (++x_pos > 127) {
+		clearBlock(gamebuffer, x_pos, y_pos);
+
+		if (++x_pos > 46) {
 			x_pos = 0;
-			if (++y_pos > 31) {
+			if (++y_pos > 14) {
 				y_pos = 0;
 			}
 		}

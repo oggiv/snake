@@ -11,7 +11,7 @@ extern const uint8_t const icon[256];
 /* Declare text buffer for display output */
 extern char textbuffer[4][16];
 
-void display_image(int x, const uint8_t *data);
+void display_image(const uint8_t *data, int x);
 void display_init(void);
 void display_string(int line, char *s);
 void display_update(void);
@@ -27,8 +27,10 @@ extern uint8_t gamebuffer[516];
 /* Functions to draw and erase pixels into our gamebuffer */
 void setPixel(uint8_t *target_array, const unsigned int x, const unsigned int y);
 void clearPixel(uint8_t *target_array, const unsigned int x, const unsigned int y);
+void setBlock(uint8_t *target_array, const unsigned int x, const unsigned int y);
+void clearBlock(uint8_t *target_array, const unsigned int x, const unsigned int y);
 
 /* Read from an interact with IO harware */
-void io_init(void);
+void ioinit(void);
 int getbtns(void);
 void setleds(uint8_t led_value);

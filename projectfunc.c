@@ -6,6 +6,7 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "project.h"
 
+#define BLOCK_OFFSET 1 /* change to compensate for grid */
 
 #define DISPLAY_CHANGE_TO_COMMAND_MODE (PORTFCLR = 0x10)
 #define DISPLAY_CHANGE_TO_DATA_MODE (PORTFSET = 0x10)
@@ -66,7 +67,7 @@ void display_init(void) {
 	spi_send_recv(0xAF);
 }
 
-void display_image(int x, const uint8_t *data) {
+void display_image(const uint8_t *data, int x) {
 	int i, j;
 	
 	for(i = 0; i < 4; i++) {
@@ -144,6 +145,16 @@ void writeArray(uint8_t *target_array, const int index, const int value) {
 	target_array[byte_index] |= value << bit_index;
 }
 
+// - Graphics functions -
+// Deactivates all pixels in given buffer
+void clearBuffer(uint8_t *target_buffer, unsigned int buffer_length) {
+
+	int bi;
+	for (bi = 0; bi < buffer_length; bi++) {
+		target_buffer[bi] = 255;
+	}
+
+}
 
 // Activates pixel in given buffer. x is between 0 and 127. y is between 0 and 31.
 void setPixel(uint8_t *target_array, const unsigned int x, const unsigned int y) {
@@ -164,7 +175,35 @@ void clearPixel(uint8_t *target_array, const unsigned int x, const unsigned int 
 	target_array[byte_index] |= 0x01 << bit_index;
 }
 
-void io_init(void) {
+void setBlock(uint8_t *target_array, const unsigned int x, const unsigned int y) {
+
+	const unsigned int actual_x = x * 2;
+	const unsigned int actual_y = y * 2;
+
+	int ny, nx;
+	for (ny = 0; ny < 2; ny++) {
+		for (nx = 0; nx < 2; nx++) {
+			setPixel(target_array, (nx + actual_x + 1), (ny + actual_y + 1));
+		}
+	}
+}
+
+void clearBlock(uint8_t *target_array, const unsigned int x, const unsigned int y) {
+
+	const unsigned int actual_x = x * 2;
+	const unsigned int actual_y = y * 2;
+
+	int ny, nx;
+	for (ny = 0; ny < 2; ny++) {
+		for (nx = 0; nx < 2; nx++) {
+			clearPixel(target_array, (nx + actual_x + BLOCK_OFFSET), (ny + actual_y + BLOCK_OFFSET));
+		}
+	}
+}
+
+
+// - IO functions - 
+void ioinit(void) {
 	
 	TRISE &= 0xFFFFFF00; // Set LEDs to output
 	TRISD |= 0x00000FE0; // Set BTNs to input
@@ -176,7 +215,7 @@ int getbtns(void) {
 	/*
 		Function prototype: int getbtns(void);
 		Parameter: none.
-		Return value: The 4 least significant bits of the return value must contain current data from push buttons BTN4, BTN3, and BTN2. BTN2 corresponds to the least significant bit. All other bits of the return value must be zero.
+		Return value: The 4 least significant bits of the return value must contain current data from push buttons BTN4, BTN3, BTN2, BTN1. BTN1 corresponds to the least significant bit. All other bits of the return value must be zero.
 		Notes: The function getbtns will never be called before Port D has been correctly initialized. The buttons BTN4, BTN3, and BTN2, are connected to bits 7, 6 and 5 of Port D.
 
 				Pin 	Port
@@ -187,7 +226,6 @@ int getbtns(void) {
 
 	 	0000 1110 = 0x0E
 	 	0000 0001 = 0x01
-
 	*/
 
 	return ((PORTD >> 4) & 0x0E) & (PORTF & 0x01);
@@ -197,3 +235,6 @@ void setleds(uint8_t led_value) {
 	/* Sets LEDs to represent the binary value of the given 'led_value' */
 	PORTE = (PORTE & 0xFFFFFF00) | led_value;
 }
+
+
+// - Interrupt functions -
