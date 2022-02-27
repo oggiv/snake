@@ -34,3 +34,7 @@ void clearBlock(uint8_t *target_array, const unsigned int x, const unsigned int 
 void ioinit(void);
 int getbtns(void);
 void setleds(uint8_t led_value);
+extern uint8_t led_count;
+
+/* Control interrupts */
+void enableInterrupt(void);

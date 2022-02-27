@@ -238,3 +238,6 @@ void setleds(uint8_t led_value) {
 
 
 // - Interrupt functions -
+void userisr(void) {
+	return;
+}

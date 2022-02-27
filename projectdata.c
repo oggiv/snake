@@ -143,3 +143,4 @@ const uint8_t const font[] = {
 
 /* ~~~ OUR STUFF BELOW THIS LINE ~~~ */
 uint8_t gamebuffer[516];
+uint8_t led_count = 0;
