@@ -21,7 +21,7 @@ void quicksleep(int cyc);
 
 
 /* ~~~ OUR STUFF BELOW THIS LINE ~~~ */
-/* Pixel graphics buffer for our game */
+/* Pixel graphics buffer */
 extern uint8_t gamebuffer[516];
 
 /* Functions to draw and erase pixels into our gamebuffer */

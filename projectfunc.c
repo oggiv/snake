@@ -205,8 +205,9 @@ void clearBlock(uint8_t *target_array, const unsigned int x, const unsigned int 
 // - IO functions - 
 void ioinit(void) {
 	
-	TRISE &= 0xFFFFFF00; // Set LEDs to output
-	TRISD |= 0x00000FE0; // Set BTNs to input
+	TRISECLR = 0x00FF; // Set LEDs to output
+	TRISFSET = 0x0002; // Set BTN 1 to input
+	TRISDSET = 0x0FE0; // Set BTNs 2-4 to input
 
 }
 
@@ -228,7 +229,7 @@ int getbtns(void) {
 	 	0000 0001 = 0x01
 	*/
 
-	return ((PORTD >> 4) & 0x0E) & (PORTF & 0x01);
+	return ((PORTD >> 4) & 0x0E) | ((PORTF >> 1) & 0x01);
 }
 
 void setleds(uint8_t led_value) {
@@ -236,7 +237,7 @@ void setleds(uint8_t led_value) {
 	PORTE = (PORTE & 0xFFFFFF00) | led_value;
 }
 
-
+/*
 // random position generator (saves x, y pos of the apple) rename those vars!
 void randint(unsigned int* apple_x, unsigned int* apple_y){
 	unsigned int countr = 0;
@@ -251,6 +252,8 @@ void randint(unsigned int* apple_x, unsigned int* apple_y){
 	*apple_x = rand_pos%94;
 	*apple_y = rand_pos&30;
 }
+*/
+
 // - Interrupt functions -
 void userisr(void) {
 	return;
