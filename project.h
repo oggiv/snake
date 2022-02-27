@@ -36,5 +36,8 @@ int getbtns(void);
 void setleds(uint8_t led_value);
 extern uint8_t led_count;
 
+/* rand pos generator for apple*/
+void randint(unsigned int* apple_x, unsigned int* apple_y);
+
 /* Control interrupts */
 void enableInterrupt(void);
