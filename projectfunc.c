@@ -240,11 +240,12 @@ void setleds(uint8_t led_value) {
 // random position generator (saves x, y pos of the apple)
 // (Silvia)
 void randint(unsigned int* apple_x, unsigned int* apple_y){
-	unsigned int countr = 0;
+    // int var to increment. 
+    unsigned int countr = 0;
 	
-	while(~(getbtns()&0xf)){ // 0xf unnec
-		count = count%0xffff; // increase count but no overflow
-		count++;
+	while(~(getbtns())){ 
+		countr = countr%0xffff; // increase countr but no overflow
+		countr++;
 	}
 	// rand int seq of shifted bitw xor, and
 	// use of Fibonacci's LFSRs
@@ -252,7 +253,7 @@ void randint(unsigned int* apple_x, unsigned int* apple_y){
 	
 	// assign position of apple
 	*apple_x = rand_pos%94;
-	*apple_y = rand_pos&30;
+	*apple_y = rand_pos%30;
 }
 
 
