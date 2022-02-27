@@ -243,7 +243,7 @@ void randint(unsigned int* apple_x, unsigned int* apple_y){
     // int var to increment. 
     unsigned int countr = 0;
 	
-	while(~(getbtns()&0x8)|~(getbtns()&0x4)|~(getbtns()&0x2)|~(getbtns()0x1)){ 
+	while(getbtns()==0){ 
 		countr = countr%0xffff; // increase countr but no overflow
 		countr++;
 	}
