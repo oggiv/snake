@@ -239,36 +239,35 @@ void setleds(uint8_t led_value) {
 
 // random position generator (saves x, y pos of the apple)
 // (Silvia)
-void rand_int(){
+void rand_pos(){
     // int var to increment. 
     static unsigned int countr = 0;
-	
+
     countr ^= get_time();
 	
     while(getbtns()==0){ 
-    countr = countr%0xffff; // increase countr but no overflow
-    countr++;
+	countr = countr%0xffff; // increase countr but no overflow
+	countr++;
     }
-	
-    // rand int seq of shifted bitw xor, and
+    // rand int seq of shifted bitw xor, and. 
     // use of Fibonacci's LFSRs
     unsigned int rand_pos = (countr>>0)^(countr>>2)^(countr>>5)&0xa55a;
-
+	
     // assign position of apple
-    *apple_x = rand_pos%94;
-    *apple_y = rand_pos%30;
+    apple_x = rand_pos%45;
+    apple_y = rand_pos%13;
 }
 
 
 // - Interrupt functions -
 // Silvia
-void usr_isr(void){
+void user_isr(){
     // IFS(0), bit 0, if flag is set
-    if (IFS(0)&0x100){
+    if ((IFS(0)&0x100)  &&  gameplay){
         // clr flag
         IFS(0) &= ~0x100; 
         tmr_countr++;
-        if (tmr_countr == speed_var){
+        if ((tmr_countr == speed_var)){
             tmr_countr = 0;
 
             // UDATE FRAME
