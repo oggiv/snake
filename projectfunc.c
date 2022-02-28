@@ -258,25 +258,6 @@ void rand_pos(){
     apple_y = rand_pos%13;
 }
 
-
-// - Interrupt functions -
-// Silvia
-void user_isr(){
-    // IFS(0), bit 0, if flag is set
-    if ((IFS(0)&0x100)  &&  gameplay){
-        // clr flag
-        IFS(0) &= ~0x100; 
-        tmr_countr++;
-        if ((tmr_countr == speed_var)){
-            tmr_countr = 0;
-
-            // UDATE FRAME
-            snake_move(head_x, head_y);
-            display_image(gamebuffer, 0);
-        }
-    }
-}
-
 // Silvia
 void exception_setup(){
 
@@ -382,4 +363,23 @@ uint8_t is_occupied(uint8_t target_x, uint8_t target_y) {
 		return 1;
 	}
 
+}
+
+
+// - Interrupt functions -
+// Silvia
+void user_isr(){
+    // IFS(0), bit 0, if flag is set
+    if ((IFS(0)&0x100)  &&  gameplay){
+        // clr flag
+        IFS(0) &= ~0x100; 
+        tmr_countr++;
+        if ((tmr_countr == speed_var)){
+            tmr_countr = 0;
+
+            // UDATE FRAME
+            snake_move(head_x, head_y);
+            display_image(gamebuffer, 0);
+        }
+    }
 }
