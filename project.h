@@ -15,18 +15,18 @@ extern char textbuffer[4][16];
 /* time val int */
 extern unsigned int time;
 /* apple coord */
-extern unsigned int apple_x;
-extern unsigned int apple_y;
+extern uint8_t apple_x;
+extern uint8_t apple_y;
 /* apple count */
-extern int apple_count; 
+extern uint16_t apple_count; 
 /* timer count */
 extern unsigned int tmr_countr;
 /* speed up var, i.e. speed up after how many timeouts/apples eaten */
-extern unsigned int speed_var;
+extern uint8_t speed_var;
 /* how many apples until a speedup */
-extern int apples_until_speedup;
+extern uint8_t apples_until_speedup;
 /* lowest clk cycles between snake move, i.e. max speed */
-extern int max_speed;
+extern uint8_t max_speed;
 /* var to start game */
 extern uint8_t gameplay;
 //
