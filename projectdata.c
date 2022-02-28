@@ -149,4 +149,4 @@ uint8_t direction = 0;
 uint16_t snake_coordinates[705];
 uint16_t snake_start = 0;
 uint16_t snake_end = 0;
-uint8_t apple_eaten = 0;
+uint8_t get_longer = 0;

@@ -177,26 +177,26 @@ void clearPixel(uint8_t *target_array, const unsigned int x, const unsigned int 
 
 void setBlock(uint8_t *target_array, const unsigned int x, const unsigned int y) {
 
-	const unsigned int actual_x = x * 2;
-	const unsigned int actual_y = y * 2;
+	const unsigned int actual_x = x * 2 + BLOCK_OFFSET;
+	const unsigned int actual_y = y * 2 + BLOCK_OFFSET;
 
 	int ny, nx;
 	for (ny = 0; ny < 2; ny++) {
 		for (nx = 0; nx < 2; nx++) {
-			setPixel(target_array, (nx + actual_x + 1), (ny + actual_y + 1));
+			setPixel(target_array, (nx + actual_x), (ny + actual_y));
 		}
 	}
 }
 
 void clearBlock(uint8_t *target_array, const unsigned int x, const unsigned int y) {
 
-	const unsigned int actual_x = x * 2;
-	const unsigned int actual_y = y * 2;
+	const unsigned int actual_x = x * 2 + BLOCK_OFFSET;
+	const unsigned int actual_y = y * 2 + BLOCK_OFFSET;
 
 	int ny, nx;
 	for (ny = 0; ny < 2; ny++) {
 		for (nx = 0; nx < 2; nx++) {
-			clearPixel(target_array, (nx + actual_x + BLOCK_OFFSET), (ny + actual_y + BLOCK_OFFSET));
+			clearPixel(target_array, (nx + actual_x), (ny + actual_y));
 		}
 	}
 }
@@ -258,7 +258,7 @@ void randint(unsigned int* apple_x, unsigned int* apple_y){
 
 
 // - Interrupt functions -
-void userisr(void) {
+void user_isr(void) {
 	return;
 }
 
@@ -310,8 +310,8 @@ void snake_move(uint8_t snake_x, uint8_t snake_y) {
 	snake_coordinates[snake_start] = write_value | (snake_x << 8) | snake_y;
 	setBlock(gamebuffer, snake_x, snake_y);
 
-	if (apple_eaten) {
-		apple_eaten = 0;
+	if (get_longer) {
+		get_longer = 0;
 	}
 	else {
 		uint16_t read_value = snake_coordinates[snake_end];
@@ -322,6 +322,22 @@ void snake_move(uint8_t snake_x, uint8_t snake_y) {
 		if (snake_end > 704) {
 			snake_end = 0;
 		}
+	}
+}
+
+uint8_t is_occupied(uint8_t target_x, uint8_t target_y) {
+
+	const unsigned int actual_x = target_x * 2 + BLOCK_OFFSET;
+	const unsigned int actual_y = target_y * 2 + BLOCK_OFFSET;
+
+	const int byte_index = (((31 - actual_y) / 8) * 128 ) + actual_x; // the byte in the buffer where the pixel resides
+	const int bit_index  = (31 - actual_y) % 8; // the index of the bit within the byte where the pixel is represented
+
+	if (gamebuffer[byte_index] & (0x01 << bit_index)) {
+		return 0;
+	}
+	else {
+		return 1;
 	}
 
 }

@@ -29,8 +29,14 @@ extern uint8_t direction;
 extern uint16_t snake_coordinates[705];
 extern uint16_t snake_start;
 extern uint16_t snake_end;
-extern uint8_t apple_eaten;
+extern uint8_t head_x;
+extern uint8_t head_y;
+extern uint8_t get_longer;
 extern void snake_move(uint8_t snake_x, uint8_t snake_y);
+
+
+/* Functions for collision detection and handling */
+uint8_t is_occupied(uint8_t target_x, uint8_t target_y);
 
 /* Functions to draw and erase pixels into our gamebuffer */
 void setPixel(uint8_t *target_array, const unsigned int x, const unsigned int y);

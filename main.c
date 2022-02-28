@@ -50,6 +50,7 @@ int main() {
 	/* ~~~ OUR STUFF BELOW THIS LINE ~~~ */
 
 	ioinit();
+	setleds(0);
 	clearBuffer(gamebuffer, 516);
 
 	int i;
@@ -64,21 +65,18 @@ int main() {
 
 	display_image(gamebuffer, 0);
 
-	uint8_t x_pos = 5;
-	uint8_t y_pos = 5;
-
-	snake_start = 0;
-	snake_end = 0;
-	apple_eaten = 0;
+	uint8_t head_x = 5;
+	uint8_t head_y = 5;
 
 	uint8_t snake_start_length = 4;
 
 	while (1) {
 
 		if (snake_start_length > 0) {
-			apple_eaten = 1;
+			get_longer = 1;
 			snake_start_length--;
 		}
+		get_longer = 1;
 
 		int btns = getbtns();
 		static int pressed = 0xF;
@@ -125,25 +123,25 @@ int main() {
 			pressed = (pressed & ~0x8) | 0x8;
 		}
 
-		snake_move(x_pos, y_pos);
+		snake_move(head_x, head_y);
 		display_image(gamebuffer, 0);
 
 		quicksleep(600000);
 
-		if ((x_pos < 47) && (x_pos >= 0)) {
-			if ((y_pos < 15) && (y_pos >= 0)) {
+		if ((head_x < 47) && (head_x >= 0)) {
+			if ((head_y < 15) && (head_y >= 0)) {
 				switch (direction) {
 					case 0:
-						x_pos++;
+						head_x++;
 						break;
 					case 1:
-						y_pos++;
+						head_y++;
 						break;
 					case 2:
-						y_pos--;
+						head_y--;
 						break;
 					case 3:
-						x_pos--;
+						head_x--;
 						break;
 				}
 			}
