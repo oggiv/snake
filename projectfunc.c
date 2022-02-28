@@ -297,3 +297,31 @@ unsigned int get_time(){
     unsigned int time = TMR2;
     return time;
 }
+
+// - Game functions -
+void snake_move(uint8_t snake_x, uint8_t snake_y) {
+
+	uint16_t write_value = 0;
+
+	snake_start++;
+	if (snake_start > 704) {
+		snake_start = 0;
+	}
+	snake_coordinates[snake_start] = write_value | (snake_x << 8) | snake_y;
+	setBlock(gamebuffer, snake_x, snake_y);
+
+	if (apple_eaten) {
+		apple_eaten = 0;
+	}
+	else {
+		uint16_t read_value = snake_coordinates[snake_end];
+		uint8_t clear_x = read_value >> 8;
+		uint8_t clear_y = read_value & 0x00FF;
+		clearBlock(gamebuffer, clear_x, clear_y);
+		snake_end++;
+		if (snake_end > 704) {
+			snake_end = 0;
+		}
+	}
+
+}

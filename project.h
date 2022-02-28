@@ -24,8 +24,13 @@ void quicksleep(int cyc);
 /* Pixel graphics buffer */
 extern uint8_t gamebuffer[516];
 
-/* Keeping track of the snake's direction */
+/* Variables and functions for the snake */
 extern uint8_t direction;
+extern uint16_t snake_coordinates[705];
+extern uint16_t snake_start;
+extern uint16_t snake_end;
+extern uint8_t apple_eaten;
+extern void snake_move(uint8_t snake_x, uint8_t snake_y);
 
 /* Functions to draw and erase pixels into our gamebuffer */
 void setPixel(uint8_t *target_array, const unsigned int x, const unsigned int y);
@@ -43,7 +48,7 @@ extern uint8_t led_count;
 void randint(unsigned int* apple_x, unsigned int* apple_y);
 
 /* Control interrupts */
-void enableInterrupt(void);
+void enable_interrupt(void);
 void exception_setup();
 
 /* Timer setup */

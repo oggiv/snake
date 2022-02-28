@@ -64,10 +64,21 @@ int main() {
 
 	display_image(gamebuffer, 0);
 
-	unsigned int x_pos = 0;
-	unsigned int y_pos = 0;
+	uint8_t x_pos = 5;
+	uint8_t y_pos = 5;
+
+	snake_start = 0;
+	snake_end = 0;
+	apple_eaten = 0;
+
+	uint8_t snake_start_length = 4;
 
 	while (1) {
+
+		if (snake_start_length > 0) {
+			apple_eaten = 1;
+			snake_start_length--;
+		}
 
 		int btns = getbtns();
 		static int pressed = 0xF;
@@ -114,12 +125,10 @@ int main() {
 			pressed = (pressed & ~0x8) | 0x8;
 		}
 
-		setBlock(gamebuffer, x_pos, y_pos);
+		snake_move(x_pos, y_pos);
 		display_image(gamebuffer, 0);
 
 		quicksleep(600000);
-
-		clearBlock(gamebuffer, x_pos, y_pos);
 
 		if ((x_pos < 47) && (x_pos >= 0)) {
 			if ((y_pos < 15) && (y_pos >= 0)) {

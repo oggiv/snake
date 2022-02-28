@@ -13,9 +13,9 @@
 	addi  $sp,$sp,4
 .endm
 
-.global enableInterrupt
+.global enable_interrupt
 
-enableInterrupt:
+enable_interrupt:
 	ei
 	jr  $ra
 	nop
