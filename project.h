@@ -10,6 +10,11 @@ extern const uint8_t const font[128*8];
 extern const uint8_t const icon[256];
 /* Declare text buffer for display output */
 extern char textbuffer[4][16];
+/* time val int */
+extern unsigned int time;
+/* apple coord */
+extern unsigned int apple_x;
+extern unsigned int apple_y;
 
 void display_image(const uint8_t *data, int x);
 void display_init(void);
