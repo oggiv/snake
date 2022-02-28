@@ -150,9 +150,12 @@ uint16_t snake_coordinates[705];
 uint16_t snake_start = 0;
 uint16_t snake_end = 0;
 uint8_t get_longer = 0;
+uint8_t head_x = 5;
+uint8_t head_y = 5;
 
 // Silvia
 unsigned int time = 0;
+uint8_t tmr_countr = 0;
 uint8_t apple_x = 0;
 uint8_t apple_y = 0;
 uint16_t apple_count = 0;

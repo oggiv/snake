@@ -51,6 +51,7 @@ int main() {
 	
 	// -- init -- 
 	// start timer
+	exception_setup();
 	timer_init();
 
 	ioinit();
@@ -69,10 +70,9 @@ int main() {
 
 	display_image(gamebuffer, 0);
 
-	uint8_t head_x = 5;
-	uint8_t head_y = 5;
-
 	uint8_t snake_start_length = 4;
+
+	gameplay = 1;
 	
 
 	// -- game play -- 
@@ -82,7 +82,6 @@ int main() {
 			get_longer = 1;
 			snake_start_length--;
 		}
-		get_longer = 1;
 
 		int btns = getbtns();
 		static int pressed = 0xF;
@@ -129,28 +128,9 @@ int main() {
 			pressed = (pressed & ~0x8) | 0x8;
 		}
 
-		snake_move(head_x, head_y);
+		/* snake_move(head_x, head_y);
 		display_image(gamebuffer, 0);
 
-		quicksleep(600000);
-
-		if ((head_x < 47) && (head_x >= 0)) {
-			if ((head_y < 15) && (head_y >= 0)) {
-				switch (direction) {
-					case 0:
-						head_x++;
-						break;
-					case 1:
-						head_y++;
-						break;
-					case 2:
-						head_y--;
-						break;
-					case 3:
-						head_x--;
-						break;
-				}
-			}
-		}
+		quicksleep(600000); */
 	}
 }

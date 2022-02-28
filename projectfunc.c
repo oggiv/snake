@@ -274,6 +274,21 @@ void user_isr(){
             snake_move(head_x, head_y);
             display_image(gamebuffer, 0);
         }
+
+        switch (direction) {
+			case 0:
+				head_x++;
+				break;
+			case 1:
+				head_y++;
+				break;
+			case 2:
+				head_y--;
+				break;
+			case 3:
+				head_x--;
+				break;
+		}
     }
 }
 
@@ -328,7 +343,7 @@ void get_apple(){
     apple_count++;
     
     /* - call get_longer, increase snake length - */
-    get_longer();
+    get_longer = 1;
 
     /* - increase speed on interval - 
             - after fewer and fewer apples (stops at one)

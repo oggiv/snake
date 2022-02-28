@@ -20,7 +20,7 @@ extern uint8_t apple_y;
 /* apple count */
 extern uint16_t apple_count; 
 /* timer count */
-extern unsigned int tmr_countr;
+extern uint8_t tmr_countr;
 /* speed up var, i.e. speed up after how many timeouts/apples eaten */
 extern uint8_t speed_var;
 /* how many apples until a speedup */
