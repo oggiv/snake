@@ -11,6 +11,24 @@ extern const uint8_t const icon[256];
 /* Declare text buffer for display output */
 extern char textbuffer[4][16];
 
+// Silvia:
+/* time val int */
+extern unsigned int time;
+/* apple coord */
+extern unsigned int apple_x;
+extern unsigned int apple_y;
+/* apple count */
+extern int apple_count; 
+/* timer count */
+extern unsigned int tmr_countr;
+/* speed up var, i.e. speed up after how many timeouts/apples eaten */
+extern unsigned int speed_var;
+/* how many apples until a speedup */
+extern int apples_until_speedup;
+/* lowest clk cycles between snake move, i.e. max speed */
+extern int max_speed;
+//
+
 void display_image(const uint8_t *data, int x);
 void display_init(void);
 void display_string(int line, char *s);
@@ -51,7 +69,7 @@ void setleds(uint8_t led_value);
 extern uint8_t led_count;
 
 /* rand pos generator for apple*/
-void randint(unsigned int* apple_x, unsigned int* apple_y);
+void rand_pos();
 
 /* Control interrupts */
 void enable_interrupt(void);

@@ -239,21 +239,24 @@ void setleds(uint8_t led_value) {
 
 // random position generator (saves x, y pos of the apple)
 // (Silvia)
-void randint(unsigned int* apple_x, unsigned int* apple_y){
+void rand_int(){
     // int var to increment. 
     static unsigned int countr = 0;
 	
-	while(getbtns()==0){ 
-		countr = countr%0xffff; // increase countr but no overflow
-		countr++;
-	}
-	// rand int seq of shifted bitw xor, and
-	// use of Fibonacci's LFSRs
-	unsigned int rand_pos = (countr>>0)^(countr>>2)^(countr>>5)&0xa55a;
+    countr ^= get_time();
 	
-	// assign position of apple
-	*apple_x = rand_pos%94;
-	*apple_y = rand_pos%30;
+    while(getbtns()==0){ 
+    countr = countr%0xffff; // increase countr but no overflow
+    countr++;
+    }
+	
+    // rand int seq of shifted bitw xor, and
+    // use of Fibonacci's LFSRs
+    unsigned int rand_pos = (countr>>0)^(countr>>2)^(countr>>5)&0xa55a;
+
+    // assign position of apple
+    *apple_x = rand_pos%94;
+    *apple_y = rand_pos%30;
 }
 
 
@@ -294,7 +297,7 @@ void timer_init(){
 // Silvia
 // get current clk value
 unsigned int get_time(){
-    unsigned int time = TMR2;
+    time = TMR2;
     return time;
 }
 
