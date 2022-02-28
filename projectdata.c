@@ -150,3 +150,13 @@ uint16_t snake_coordinates[705];
 uint16_t snake_start = 0;
 uint16_t snake_end = 0;
 uint8_t get_longer = 0;
+
+// Silvia
+unsigned int time = 0;
+uint8_t apple_x = 0;
+uint8_t apple_y = 0;
+uint16_t apple_count = 0;
+uint8_t apples_until_speedup = 10;
+uint8_t speed_var = 10;
+uint8_t max_speed = 5;
+uint8_t gameplay = 0;
