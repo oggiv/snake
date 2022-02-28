@@ -50,7 +50,7 @@ void setleds(uint8_t led_value);
 extern uint8_t led_count;
 
 /* rand pos generator for apple*/
-void randint(unsigned int* apple_x, unsigned int* apple_y);
+void rand_int();
 
 /* Control interrupts */
 void enable_interrupt(void);
