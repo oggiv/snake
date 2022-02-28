@@ -27,7 +27,10 @@ extern unsigned int speed_var;
 extern int apples_until_speedup;
 /* lowest clk cycles between snake move, i.e. max speed */
 extern int max_speed;
+/* var to start game */
+extern uint8_t gameplay;
 //
+
 
 void display_image(const uint8_t *data, int x);
 void display_init(void);
