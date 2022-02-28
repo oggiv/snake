@@ -326,9 +326,9 @@ void get_apple(){
 
     /* - increase apple count - */
     apple_count++;
-    
-    /* - call get_longer, increase snake length - */
-    get_longer();
+
+    /* - raise flag, increase snake length - */
+    get_longer=1;
 
     /* - increase speed on interval - 
             - after fewer and fewer apples (stops at one)
