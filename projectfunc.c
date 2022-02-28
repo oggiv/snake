@@ -241,7 +241,7 @@ void setleds(uint8_t led_value) {
 // (Silvia)
 void randint(unsigned int* apple_x, unsigned int* apple_y){
     // int var to increment. 
-    unsigned int countr = 0;
+    static unsigned int countr = 0;
 	
 	while(getbtns()==0){ 
 		countr = countr%0xffff; // increase countr but no overflow
@@ -260,4 +260,40 @@ void randint(unsigned int* apple_x, unsigned int* apple_y){
 // - Interrupt functions -
 void userisr(void) {
 	return;
+}
+
+// Silvia
+void exception_setup(){
+
+    /* tmr2: 
+            Flag    IFS(0) <8>
+            Enable  IEC(0) <8>
+            P       IPC(2) <4:2>
+            Sp      IPC(2) <1:0>
+    */
+    
+    IEC(0) = 1 << 8; // enable int
+    IPC(2) = 0x1f; // highest priority
+    
+    enable_interrupt(); // call ei 
+}
+
+
+// - timer funcs -
+// Silvia
+void timer_init(){
+    TMR2 = 0x0; // clr current tmr val
+    TMR3 = 0x0; // clr current tmr val
+
+    // 32 bit TMR mode (bit 3 in TxCON - tmr ctrl)
+    T2CONSET = 0x8;
+    PR2 = 0x3d0900; // 4 000 000 times (0,05 s is one clk per)
+    T2CONSET = 0x8000; // bit 15 starts counter, bits 7-5 sets prescale (111 -->> 256:1)
+}
+
+// Silvia
+// get current clk value
+unsigned int get_time(){
+    unsigned int time = TMR2;
+    return time;
 }

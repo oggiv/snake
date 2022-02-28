@@ -44,3 +44,8 @@ void randint(unsigned int* apple_x, unsigned int* apple_y);
 
 /* Control interrupts */
 void enableInterrupt(void);
+void exception_setup();
+
+/* Timer setup */
+void timer_init();
+unsigned int get_time();
