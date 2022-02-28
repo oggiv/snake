@@ -48,6 +48,10 @@ int main() {
 	
 
 	/* ~~~ OUR STUFF BELOW THIS LINE ~~~ */
+	
+	// -- init -- 
+	// start timer
+	timer_init();
 
 	ioinit();
 	setleds(0);
@@ -69,7 +73,9 @@ int main() {
 	uint8_t head_y = 5;
 
 	uint8_t snake_start_length = 4;
+	
 
+	// -- game play -- 
 	while (1) {
 
 		if (snake_start_length > 0) {
