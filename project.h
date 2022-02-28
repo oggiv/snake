@@ -24,6 +24,9 @@ void quicksleep(int cyc);
 /* Pixel graphics buffer */
 extern uint8_t gamebuffer[516];
 
+/* Keeping track of the snake's direction */
+extern uint8_t direction;
+
 /* Functions to draw and erase pixels into our gamebuffer */
 void setPixel(uint8_t *target_array, const unsigned int x, const unsigned int y);
 void clearPixel(uint8_t *target_array, const unsigned int x, const unsigned int y);

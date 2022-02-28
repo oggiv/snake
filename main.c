@@ -69,17 +69,74 @@ int main() {
 
 	while (1) {
 
+		int btns = getbtns();
+		static int pressed = 0xF;
+		if (btns != 0) {
+			if (btns & 0x1) {
+				if ((direction != 3) && (pressed & 0x1)) {
+					pressed &= ~0x1;
+					direction = 0;
+				}
+			}
+
+			if (btns & 0x2) {
+				if ((direction != 2) && (pressed & 0x2)) {
+					pressed &= ~0x2;
+					direction = 1;
+				}
+			}
+
+			if (btns & 0x4) {
+				if ((direction != 1) && (pressed & 0x4)) {
+					pressed &= ~0x4;
+					direction = 2;
+				}
+			}
+
+			if (btns & 0x8) {
+				if ((direction != 0) && (pressed & 0x8)) {
+					pressed &= ~0x8;
+					direction = 3;
+				}
+			}
+		}
+
+		if ((~pressed & 0x1) && (~btns & 0x1)) {
+			pressed = (pressed & ~0x1) | 0x1;
+		}
+		if ((~pressed & 0x2) && (~btns & 0x2)) {
+			pressed = (pressed & ~0x2) | 0x2;
+		}
+		if ((~pressed & 0x4) && (~btns & 0x4)) {
+			pressed = (pressed & ~0x4) | 0x4;
+		}
+		if ((~pressed & 0x8) && (~btns & 0x8)) {
+			pressed = (pressed & ~0x8) | 0x8;
+		}
+
 		setBlock(gamebuffer, x_pos, y_pos);
 		display_image(gamebuffer, 0);
 
-		quicksleep(800000);
+		quicksleep(600000);
 
 		clearBlock(gamebuffer, x_pos, y_pos);
 
-		if (++x_pos > 46) {
-			x_pos = 0;
-			if (++y_pos > 14) {
-				y_pos = 0;
+		if ((x_pos < 47) && (x_pos >= 0)) {
+			if ((y_pos < 15) && (y_pos >= 0)) {
+				switch (direction) {
+					case 0:
+						x_pos++;
+						break;
+					case 1:
+						y_pos++;
+						break;
+					case 2:
+						y_pos--;
+						break;
+					case 3:
+						x_pos--;
+						break;
+				}
 			}
 		}
 	}
