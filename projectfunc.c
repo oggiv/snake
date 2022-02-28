@@ -261,8 +261,21 @@ void rand_int(){
 
 
 // - Interrupt functions -
-void user_isr(void) {
-	return;
+// Silvia
+void usr_isr(void){
+    // IFS(0), bit 0, if flag is set
+    if (IFS(0)&0x100){
+        // clr flag
+        IFS(0) &= ~0x100; 
+        tmr_countr++;
+        if (tmr_countr == speed_var){
+            tmr_countr = 0;
+
+            // UDATE FRAME
+            snake_move(head_x, head_y);
+            display_image(gamebuffer, 0);
+        }
+    }
 }
 
 // Silvia
@@ -299,6 +312,33 @@ void timer_init(){
 unsigned int get_time(){
     time = TMR2;
     return time;
+}
+
+// Silvia
+// func to call every time apple is eaten
+void get_apple(){
+    /* ~~ when an apple has been consumed ~~ */
+
+    /* - generate new apple pos, cannot collide w/ anything else - */
+    rand_pos();
+    while(is_occupied(apple_x, apple_y)){
+        rand_pos();
+    }
+
+    /* - increase apple count - */
+    apple_count++;
+    
+    /* - call get_longer, increase snake length - */
+    get_longer();
+
+    /* - increase speed on interval - 
+            - after fewer and fewer apples (stops at one)
+            - stop at max speed (speed_var = const int, e.g. 5)
+    */
+
+    if ((apple_count % apples_until_speedup--)==0  &&  (apples_until_speedup>1)  &&  (speed_var>max_speed)){
+        speed_var--;
+    }
 }
 
 // - Game functions -
