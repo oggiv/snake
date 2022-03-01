@@ -75,15 +75,12 @@ int main() {
 	display_image(gamebuffer, 0);
 
 	// init snake length
-	uint8_t snake_start_length = 4;
+	uint8_t snake_start_length = 1;
 
 	// wait for player to start game
-	// int led_value = 0;
-	/* while(getbtns()==0){
-		led_value = led_value%0xff;
-		se tleds(led_value++);
-		quicksleep(60000);
-	}*/ 
+	uint8_t led_value = 0;
+
+	while(getbtns()==0);
 
 	gameplay = 1; // start game
 
