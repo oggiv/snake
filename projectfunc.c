@@ -240,15 +240,9 @@ void setleds(uint8_t led_value) {
 // random position generator (saves x, y pos of the apple)
 // (Silvia)
 void rand_pos(){
-    // int var to increment. 
-    static unsigned int countr = 0;
 
     countr ^= get_time();
 	
-    while(getbtns()==0){ 
-	countr = countr%0xffff; // increase countr but no overflow
-	countr++;
-    }
     // rand int seq of shifted bitw xor, and. 
     // use of Fibonacci's LFSRs
     unsigned int rand_pos = (countr>>0)^(countr>>2)^(countr>>5)&0xa55a;
@@ -309,7 +303,7 @@ void get_apple(void){
     /* - increase apple count - */
     apple_count++;
 
-    /* - raise flag, to increase length - */
+    /* - raise flag, increase 7yh length - */
     get_longer=1;
 
     /* - increase speed on interval - 
@@ -317,7 +311,7 @@ void get_apple(void){
             - stop at max speed (speed_var = const int, e.g. 5)
     */
 
-    if ((apples_until_speedup>1)  &&  (apple_count % apples_until_speedup--)==0  &&  (speed_var>max_speed)){
+    if ((apple_count % apples_until_speedup--)==0  &&  (apples_until_speedup>1)  &&  (speed_var>max_speed)){
         speed_var--;
     }
 
@@ -402,6 +396,8 @@ void user_isr(){
 				}
 				if (is_occupied(head_x, head_y)) {
 					if (head_x == apple_x && head_y == apple_y) {
+						static uint8_t testled = 1;
+						setleds(testled++);
 						get_apple();
 					}
 					else {

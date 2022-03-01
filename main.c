@@ -80,7 +80,10 @@ int main() {
 	// wait for player to start game
 	uint8_t led_value = 0;
 
-	while(getbtns()==0);
+	while(getbtns()==0){ 
+		countr = countr%0xffff; // increase countr but no overflow
+		countr++;
+    }
 
 	gameplay = 1; // start game
 

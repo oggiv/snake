@@ -74,6 +74,7 @@ extern uint8_t led_count;
 
 /* rand pos generator for apple*/
 void rand_pos();
+extern unsigned int countr;
 
 /* Control interrupts */
 void enable_interrupt(void);
