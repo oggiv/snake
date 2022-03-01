@@ -220,10 +220,10 @@ int getbtns(void) {
 		Notes: The function getbtns will never be called before Port D has been correctly initialized. The buttons BTN4, BTN3, and BTN2, are connected to bits 7, 6 and 5 of Port D.
 
 				Pin 	Port
-		BTN1: 4		RF1
-		BTN2: 34 	RD5
-		BTN3:	36 	RD6
-		BTN4:	37 	RD7
+		BTN1: 	4		RF1
+		BTN2: 	34 		RD5
+		BTN3:	36 		RD6
+		BTN4:	37 		RD7
 
 	 	0000 1110 = 0x0E
 	 	0000 0001 = 0x01
@@ -268,7 +268,7 @@ void exception_setup(){
             Sp      IPC(2) <1:0>
     */
     
-    IEC(0) = (1 << 8)|(1 << 12); // enable int (tmr3 bit 12)
+    IEC(0) = (1 << 8); // enable int (tmr3 bit 12)
     IPC(2) = 0x1f; // highest priority
 	IPC(3) = 0x1f; // highest priority, tmr3
     
@@ -371,42 +371,40 @@ uint8_t is_occupied(uint8_t target_x, uint8_t target_y) {
 // Silvia
 void user_isr(){
     // IFS(0), bit 8, if flag is set
-    if (gameplay && (IFS(0)&0x100)){
-        // clr flag
-        IFS(0) &= ~0x100; 
-        tmr_countr++;
-        if ((tmr_countr == speed_var)){
-            tmr_countr = 0;
+    if (IFS(0)&0x100) {
+    	// clr flag
+        IFS(0) &= ~0x100;
+	    if (gameplay){
+	        tmr_countr++;
+	        if ((tmr_countr == speed_var)){
+	            tmr_countr = 0;
 
-            // UDATE FRAME (based on dir fr btn/main)
-			switch (direction) {
-				case 0:
-					head_x++;
-					break;
-				case 1:
-					head_y++;
-					break;
-				case 2:
-					head_y--;
-					break;
-				case 3:
-					head_x--;
-					break;
-			}
-            snake_move(head_x, head_y);
-            display_image(gamebuffer, 0);
-        }
-    }
+	            // UDATE FRAME (based on dir fr btn/main)
+				switch (direction) {
+					case 0:
+						head_x++;
+						break;
+					case 1:
+						head_y++;
+						break;
+					case 2:
+						head_y--;
+						break;
+					case 3:
+						head_x--;
+						break;
+				}
 
-	/*if ((IFS(0)&0x1000)  &&  gameplay){
-		IFS(0) &= ~0x1000;
-		tmr_countr++;
-        if ((tmr_countr == speed_var)){
-            tmr_countr = 0;
+				/*if (head_x > 45 || head_y > 13) {
+					gameplay = 0;
+				}
+				if (is_occupied(head_x, head_y)) {
 
-            // UDATE FRAME
-            snake_move(head_x, head_y);
-            display_image(gamebuffer, 0);
-        }
-	}*/
+				}*/
+
+	            snake_move(head_x, head_y);
+	            display_image(gamebuffer, 0);
+	        }
+	    }
+	}
 }
