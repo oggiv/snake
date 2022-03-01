@@ -1,6 +1,6 @@
 /*  projectfunc.c
 	Contains project functions for interacting with the hardware.
-	*/
+*/
 
 #include <stdint.h>   /* Declarations of uint_32 and the like */
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
@@ -396,6 +396,9 @@ void user_isr(){
 						head_x--;
 						break;
 				}
+
+				// allow direction to be changed (S)
+				allow_direction = 1;
 
 				if (head_x > 45 || head_y > 13) {
 					gameplay = 0;

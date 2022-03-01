@@ -107,32 +107,33 @@ int main() {
 			// which btn pressed
 			if (btns & 0x1) {
 				// snake cannot double back on itself
-				if ((direction != 3) && (pressed & 0x1)) {
+				if ((direction != 3) && (pressed & 0x1) && allow_direction) {
 					pressed &= ~0x1;
 					direction = 0;
 				}
 			}
 
 			if (btns & 0x2) {
-				if ((direction != 2) && (pressed & 0x2)) {
+				if ((direction != 2) && (pressed & 0x2) && allow_direction) {
 					pressed &= ~0x2;
 					direction = 1;
 				}
 			}
 
 			if (btns & 0x4) {
-				if ((direction != 1) && (pressed & 0x4)) {
+				if ((direction != 1) && (pressed & 0x4) && allow_direction) {
 					pressed &= ~0x4;
 					direction = 2;
 				}
 			}
 
 			if (btns & 0x8) {
-				if ((direction != 0) && (pressed & 0x8)) {
+				if ((direction != 0) && (pressed & 0x8) && allow_direction) {
 					pressed &= ~0x8;
 					direction = 3;
 				}
 			}
+			allow_direction = 0;
 		}
 
 		// clr 'toggle', untoggle

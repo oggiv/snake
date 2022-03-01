@@ -163,3 +163,4 @@ uint8_t apples_until_speedup = 5;
 uint8_t speed_var = 10;
 uint8_t max_speed = 5;
 uint8_t gameplay = 0;
+uint8_t allow_direction = 1;

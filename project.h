@@ -29,6 +29,8 @@ extern uint8_t apples_until_speedup;
 extern uint8_t max_speed;
 /* var to start game */
 extern uint8_t gameplay;
+/* var to allow dir change */
+extern uint8_t allow_direction;
 //
 
 
