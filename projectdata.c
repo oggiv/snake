@@ -142,6 +142,7 @@ const uint8_t const font[] = {
 
 
 /* ~~~ OUR STUFF BELOW THIS LINE ~~~ */
+// (V)
 uint8_t gamebuffer[516];
 
 uint8_t startscreenbuffer[516];
@@ -156,15 +157,15 @@ uint8_t get_longer = 0;
 uint8_t head_x = 5;
 uint8_t head_y = 5;
 
-// Silvia
+// (S)
 unsigned int time = 0;
 uint8_t tmr_countr = 0;
 unsigned int countr = 0;
 uint8_t apple_x = 0;
 uint8_t apple_y = 0;
 uint16_t apple_count = 0;
-// uint8_t apples_until_speedup = 3;
-uint8_t speed_var = 3;
+uint8_t apples_until_speedup = 3;
+uint8_t speed_var = 20;
 // uint8_t max_speed = 1;
 uint8_t gameplay = 0;
 uint8_t allow_direction = 1;

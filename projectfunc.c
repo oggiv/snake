@@ -128,6 +128,7 @@ void display_update(void) {
 
 
 /* ~~~ OUR STUFF BELOW THIS LINE ~~~ */
+// (V)
 char readArray(const uint8_t *target_array, const int index) {
 
 	unsigned int byte_index = index / 8;
@@ -238,10 +239,10 @@ void setleds(uint8_t led_value) {
 }
 
 // random position generator (saves x, y pos of the apple)
-// (Silvia)
+// (S)
 void rand_int(){
 
-	rand_pos = countr;
+	rand_pos = countr ^ get_time();
 	
     // rand int seq of shifted bitw xor, and. 
     // use of Fibonacci's LFSRs
@@ -252,7 +253,7 @@ void rand_int(){
     apple_y = rand_pos%13;
 }
 
-// Silvia
+// (S)
 void exception_setup(){
 
     /* tmr2: 
@@ -271,26 +272,28 @@ void exception_setup(){
 
 
 // - timer funcs -
-// Silvia
+// (S)
 void timer_init(){
     TMR2 = 0x0; // clr current tmr val
     TMR3 = 0x0; // clr current tmr val
 
     // 32 bit TMR mode (bit 3 in TxCON - tmr ctrl)
     // T2CONSET = 0x8;
-    PR2 = 15625; // 4 000 000 times (0,05 s is one clk per)
+    PR2 = 3125; // 4 000 000 times (0,05 s is one clk per)
     T2CONSET = 0x8070; // bit 15 starts counter, bits 6-4 sets prescale (111 -->> 256:1)
 }
 
-// Silvia
+
 // get current clk value
+// (S)
 unsigned int get_time(){
     time = TMR2;
     return time;
 }
 
-// Silvia
+
 // func to call every time apple is eaten
+// (S)
 void get_apple(void){
     /* ~~ when an apple has been consumed ~~ */
 
@@ -305,27 +308,24 @@ void get_apple(void){
 
     /* - raise flag, to increase length - */
     get_longer=1;
-	testled = 0x1;
-	setleds(testled);
 
     /* - increase speed on interval - 
             - after three apples
             - stop at max speed (speed_var = 1)
     */
 
-	int nr_apples = apple_count;
-
-    if ((speed_var>1)  &&  (nr_apples==3)){
+    if ((speed_var>1)	&&  apples_until_speedup  &&  (apple_count%apples_until_speedup==0)){
         speed_var--;
-		nr_apples = 0;
+		if(apples_until_speedup>1){
+			apples_until_speedup--;
+		}
     }
 
     setBlock(gamebuffer, apple_x, apple_y);
-	testled = 0x10;
-	setleds(testled);
 }
 
 // - Game functions -
+// All (V)
 void snake_move(uint8_t snake_x, uint8_t snake_y) {
 
 	uint16_t write_value = 0;
@@ -353,6 +353,7 @@ void snake_move(uint8_t snake_x, uint8_t snake_y) {
 }
 
 
+// (V)
 uint8_t is_occupied(uint8_t target_x, uint8_t target_y) {
 
 	const unsigned int actual_x = target_x * 2 + BLOCK_OFFSET;
@@ -372,7 +373,7 @@ uint8_t is_occupied(uint8_t target_x, uint8_t target_y) {
 
 
 // - Interrupt functions -
-// Silvia
+// (S)
 void user_isr(){
     // IFS(0), bit 8, if flag is set
     if (IFS(0)&0x100) {
@@ -383,7 +384,7 @@ void user_isr(){
 	        if ((tmr_countr == speed_var)){
 	            tmr_countr = 0;
 
-	            // UDATE FRAME (based on dir fr btn/main)
+	            // UDATE FRAME (based on dir fr btn/main) (V)
 				switch (direction) {
 					case 0:
 						head_x++;
@@ -402,6 +403,7 @@ void user_isr(){
 				// allow direction to be changed (S)
 				allow_direction = 1;
 
+				// (V)
 				if (head_x > 45 || head_y > 13) {
 					gameplay = 0;
 					testled = 4;

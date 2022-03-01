@@ -48,9 +48,12 @@ int main() {
 	
 
 	/* ~~~ OUR STUFF BELOW THIS LINE ~~~ */
+
+	// All (V)
 	
 	// -- init -- 
 	// start timer, enable interrupt
+	// (S)
 	timer_init();
     exception_setup();
 
@@ -80,8 +83,9 @@ int main() {
 	// wait for player to start game
 	uint8_t led_value = 0;
 
+	// (S)
 	while(getbtns()==0){ 
-		countr = countr%0xffff; // increase countr but no overflow
+		countr = countr%0xffffffff; // increase countr but no overflow
 		countr++;
     }
 
@@ -113,6 +117,7 @@ int main() {
 				if ((direction != 3) && (pressed & 0x1) && allow_direction) {
 					pressed &= ~0x1;
 					direction = 0;
+					// (S)
 					allow_direction = 0;
 				}
 
