@@ -143,6 +143,9 @@ const uint8_t const font[] = {
 
 /* ~~~ OUR STUFF BELOW THIS LINE ~~~ */
 uint8_t gamebuffer[516];
+
+uint8_t startscreenbuffer[516];
+
 uint8_t led_count = 0;
 uint8_t direction = 0;
 
@@ -156,6 +159,7 @@ uint8_t head_y = 5;
 // Silvia
 unsigned int time = 0;
 uint8_t tmr_countr = 0;
+unsigned int countr = 0;
 uint8_t apple_x = 0;
 uint8_t apple_y = 0;
 uint16_t apple_count = 0;
