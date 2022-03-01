@@ -62,7 +62,19 @@ int main() {
 	ioinit();
 	setleds(0);
 
+	display_string(1, "     SNAKE");
+	display_string(2, "  Press button");
+	display_update();
+
+	// (S)
+	while(getbtns()==0){ 
+		countr = countr%0xffffffff; // increase countr but no overflow
+		countr++;
+    }
+
 	while (1) {
+
+		setleds(0);
 
 		direction = 0;
 		snake_start = 0;
@@ -83,19 +95,6 @@ int main() {
 
 		// show the borders
 		display_image(gamebuffer, 0);
-
-		// init snake length
-		uint8_t snake_start_length = 1;
-
-		display_string(1, "     SNAKE");
-		display_string(2, "  Press button");
-		display_update();
-
-		// (S)
-		while(getbtns()==0){ 
-			countr = countr%0xffffffff; // increase countr but no overflow
-			countr++;
-	    }
 
 	    // game border
 		int i;
@@ -118,12 +117,6 @@ int main() {
 
 		// -- game play -- 
 		while (gameplay) {
-
-			// turns dot into snake - init code 
-			if (snake_start_length > 0) {
-				get_longer = 1;
-				snake_start_length--;
-			}
 
 			// 'toggle' var for btn
 			int btns = getbtns();

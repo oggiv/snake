@@ -402,14 +402,22 @@ void user_isr(){
 						head_y++;
 						break;
 					case 2:
-						head_y--;
+						if (head_y == 0) {
+							gameplay = 0;
+						}
+						else {
+							head_y--;
+						}
 						break;
 					case 3:
-						head_x--;
+						if (head_x == 0) {
+							gameplay = 0;
+						}
+						else {
+							head_x--;
+						}
 						break;
 				}
-
-				setleds(gameplay);
 
 				// allow direction to be changed (S)
 				allow_direction = 1;
@@ -432,5 +440,7 @@ void user_isr(){
 	            display_image(gamebuffer, 0);
 	        }
 	    }
+	    static uint8_t test = 0;
+	    setleds(test++);
 	}
 }

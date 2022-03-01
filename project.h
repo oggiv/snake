@@ -11,6 +11,17 @@ extern const uint8_t const icon[256];
 /* Declare text buffer for display output */
 extern char textbuffer[4][16];
 
+void display_image(const uint8_t *data, int x);
+void display_init(void);
+void display_string(int line, char *s);
+void display_update(void);
+uint8_t spi_send_recv(uint8_t data);
+void quicksleep(int cyc);
+
+
+
+/* ~~~ OUR STUFF BELOW THIS LINE ~~~ */
+
 // Silvia:
 /* time val int */
 extern unsigned int time;
@@ -33,19 +44,7 @@ extern uint8_t gameplay;
 extern uint8_t allow_direction;
 extern uint8_t testled;
 unsigned int rand_pos;
-//
 
-
-void display_image(const uint8_t *data, int x);
-void display_init(void);
-void display_string(int line, char *s);
-void display_update(void);
-uint8_t spi_send_recv(uint8_t data);
-void quicksleep(int cyc);
-
-
-
-/* ~~~ OUR STUFF BELOW THIS LINE ~~~ */
 /* Pixel graphics buffer */
 extern uint8_t gamebuffer[516];
 
