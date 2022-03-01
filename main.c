@@ -56,7 +56,6 @@ int main() {
 	// (S)
 	timer_init();
     exception_setup();
-	// 
 
 
 	// init io, leds
@@ -89,7 +88,6 @@ int main() {
 		countr = countr%0xffffffff; // increase countr but no overflow
 		countr++;
     }
-	//
 
 	gameplay = 1; // start game
 
