@@ -239,13 +239,13 @@ void setleds(uint8_t led_value) {
 
 // random position generator (saves x, y pos of the apple)
 // (Silvia)
-void rand_pos(){
+void rand_int(){
 
-    countr ^= get_time();
+	rand_pos = countr;
 	
     // rand int seq of shifted bitw xor, and. 
     // use of Fibonacci's LFSRs
-    unsigned int rand_pos = (countr>>0)^(countr>>2)^(countr>>5)&0xa55a;
+    rand_pos = (rand_pos>>0)^(rand_pos>>2)^(rand_pos>>5)&0xa55a;
 	
     // assign position of apple
     apple_x = rand_pos%45;
@@ -278,7 +278,7 @@ void timer_init(){
 
     // 32 bit TMR mode (bit 3 in TxCON - tmr ctrl)
     // T2CONSET = 0x8;
-    PR2 = 31250; // 4 000 000 times (0,05 s is one clk per)
+    PR2 = 15625; // 4 000 000 times (0,05 s is one clk per)
     T2CONSET = 0x8070; // bit 15 starts counter, bits 6-4 sets prescale (111 -->> 256:1)
 }
 
@@ -295,27 +295,34 @@ void get_apple(void){
     /* ~~ when an apple has been consumed ~~ */
 
     /* - generate new apple pos, cannot collide w/ anything else - */
-    rand_pos();
+    rand_int();
     while(is_occupied(apple_x, apple_y)){
-        rand_pos();
+        rand_int();
     }
-
+	
     /* - increase apple count - */
     apple_count++;
 
-    /* - raise flag, increase 7yh length - */
+    /* - raise flag, to increase length - */
     get_longer=1;
+	testled = 0x1;
+	setleds(testled);
 
     /* - increase speed on interval - 
-            - after fewer and fewer apples (stops at one)
-            - stop at max speed (speed_var = const int, e.g. 5)
+            - after three apples
+            - stop at max speed (speed_var = 1)
     */
 
-    if ((apple_count % apples_until_speedup--)==0  &&  (apples_until_speedup>1)  &&  (speed_var>max_speed)){
+	int nr_apples = apple_count;
+
+    if ((speed_var>1)  &&  (nr_apples==3)){
         speed_var--;
+		nr_apples = 0;
     }
 
     setBlock(gamebuffer, apple_x, apple_y);
+	testled = 0x10;
+	setleds(testled);
 }
 
 // - Game functions -
@@ -344,6 +351,7 @@ void snake_move(uint8_t snake_x, uint8_t snake_y) {
 		}
 	}
 }
+
 
 uint8_t is_occupied(uint8_t target_x, uint8_t target_y) {
 
@@ -396,14 +404,19 @@ void user_isr(){
 
 				if (head_x > 45 || head_y > 13) {
 					gameplay = 0;
+					testled = 4;
+					setleds(testled);
 				}
 				if (is_occupied(head_x, head_y)) {
 					if (head_x == apple_x && head_y == apple_y) {
-						static uint8_t testled = 1;
-						setleds(testled++);
 						get_apple();
+						testled = 1;
+						setleds(testled);
+						
 					}
 					else {
+						testled = 2;
+						setleds(testled);
 						gameplay = 0;
 					}
 				}

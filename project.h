@@ -31,6 +31,8 @@ extern uint8_t max_speed;
 extern uint8_t gameplay;
 /* var to allow dir change */
 extern uint8_t allow_direction;
+extern uint8_t testled;
+unsigned int rand_pos;
 //
 
 
@@ -75,7 +77,7 @@ void setleds(uint8_t led_value);
 extern uint8_t led_count;
 
 /* rand pos generator for apple*/
-void rand_pos();
+void rand_int();
 extern unsigned int countr;
 
 /* Control interrupts */
