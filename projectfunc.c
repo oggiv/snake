@@ -309,7 +309,7 @@ void get_apple(void){
     /* - increase apple count - */
     apple_count++;
 
-    /* - raise flag, increase 7yh length - */
+    /* - raise flag, to increase length - */
     get_longer=1;
 
     /* - increase speed on interval - 
@@ -317,7 +317,7 @@ void get_apple(void){
             - stop at max speed (speed_var = const int, e.g. 5)
     */
 
-    if ((apple_count % apples_until_speedup--)==0  &&  (apples_until_speedup>1)  &&  (speed_var>max_speed)){
+    if ((apples_until_speedup>1)  &&  (apple_count % apples_until_speedup--)==0  &&  (speed_var>max_speed)){
         speed_var--;
     }
 
