@@ -160,6 +160,6 @@ uint8_t apple_x = 0;
 uint8_t apple_y = 0;
 uint16_t apple_count = 0;
 uint8_t apples_until_speedup = 10;
-uint8_t speed_var = 10;
+uint8_t speed_var = 1;
 uint8_t max_speed = 5;
 uint8_t gameplay = 0;

@@ -268,8 +268,9 @@ void exception_setup(){
             Sp      IPC(2) <1:0>
     */
     
-    IEC(0) = 1 << 8; // enable int
+    IEC(0) = (1 << 8)|(1 << 12); // enable int (tmr3 bit 12)
     IPC(2) = 0x1f; // highest priority
+	IPC(3) = 0x1f; // highest priority, tmr3
     
     enable_interrupt(); // call ei 
 }
@@ -282,9 +283,9 @@ void timer_init(){
     TMR3 = 0x0; // clr current tmr val
 
     // 32 bit TMR mode (bit 3 in TxCON - tmr ctrl)
-    T2CONSET = 0x8;
-    PR2 = 0x3d0900; // 4 000 000 times (0,05 s is one clk per)
-    T2CONSET = 0x8000; // bit 15 starts counter, bits 7-5 sets prescale (111 -->> 256:1)
+    // T2CONSET = 0x8;
+    PR2 = 31250; // 4 000 000 times (0,05 s is one clk per)
+    T2CONSET = 0x8070; // bit 15 starts counter, bits 6-4 sets prescale (111 -->> 256:1)
 }
 
 // Silvia
@@ -308,7 +309,7 @@ void get_apple(){
     /* - increase apple count - */
     apple_count++;
 
-    /* - raise flag, increase snake length - */
+    /* - raise flag, increase 7yh length - */
     get_longer=1;
 
     /* - increase speed on interval - 
@@ -369,11 +370,37 @@ uint8_t is_occupied(uint8_t target_x, uint8_t target_y) {
 // - Interrupt functions -
 // Silvia
 void user_isr(){
-    // IFS(0), bit 0, if flag is set
-    if ((IFS(0)&0x100)  &&  gameplay){
+    // IFS(0), bit 8, if flag is set
+    if (gameplay && (IFS(0)&0x100)){
         // clr flag
         IFS(0) &= ~0x100; 
         tmr_countr++;
+        if ((tmr_countr == speed_var)){
+            tmr_countr = 0;
+
+            // UDATE FRAME (based on dir fr btn/main)
+			switch (direction) {
+				case 0:
+					head_x++;
+					break;
+				case 1:
+					head_y++;
+					break;
+				case 2:
+					head_y--;
+					break;
+				case 3:
+					head_x--;
+					break;
+			}
+            snake_move(head_x, head_y);
+            display_image(gamebuffer, 0);
+        }
+    }
+
+	/*if ((IFS(0)&0x1000)  &&  gameplay){
+		IFS(0) &= ~0x1000;
+		tmr_countr++;
         if ((tmr_countr == speed_var)){
             tmr_countr = 0;
 
@@ -381,5 +408,5 @@ void user_isr(){
             snake_move(head_x, head_y);
             display_image(gamebuffer, 0);
         }
-    }
+	}*/
 }

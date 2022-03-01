@@ -38,7 +38,7 @@ int main() {
 	/* SPI2STAT bit SPIROV = 0; */
 	SPI2STATCLR = 0x40;
 	/* SPI2CON bit CKP = 1; */
-        SPI2CONSET = 0x40;
+    SPI2CONSET = 0x40;
 	/* SPI2CON bit MSTEN = 1; */
 	SPI2CONSET = 0x20;
 	/* SPI2CON bit ON = 1; */
@@ -50,14 +50,17 @@ int main() {
 	/* ~~~ OUR STUFF BELOW THIS LINE ~~~ */
 	
 	// -- init -- 
-	// start timer
-	exception_setup();
+	// start timer, enable interrupt
 	timer_init();
+    exception_setup();
 
+
+	// init io, leds
 	ioinit();
 	setleds(0);
 	clearBuffer(gamebuffer, 516);
 
+	// game border
 	int i;
 	for (i = 0; i < 96; i++) {
 		setPixel(gamebuffer, i, 31);
@@ -68,25 +71,43 @@ int main() {
 		setPixel(gamebuffer, 95, i);
 	}
 
+	// show the borders
 	display_image(gamebuffer, 0);
 
+	// init snake length
 	uint8_t snake_start_length = 4;
 
-	gameplay = 1;
+	// wait for player to start game
+	// int led_value = 0;
+	/* while(getbtns()==0){
+		led_value = led_value%0xff;
+		se tleds(led_value++);
+		quicksleep(60000);
+	}*/ 
+
+	gameplay = 1; // start game
+
+	snake_move(head_x, head_y);
+    display_image(gamebuffer, 0);
 	
 
 	// -- game play -- 
 	while (1) {
 
+		// turns dot into snake - init code 
 		if (snake_start_length > 0) {
 			get_longer = 1;
 			snake_start_length--;
 		}
 
+		// 'toggle' var for btn
 		int btns = getbtns();
 		static int pressed = 0xF;
+		// if any is pressd
 		if (btns != 0) {
+			// which btn pressed
 			if (btns & 0x1) {
+				// snake cannot double back on itself
 				if ((direction != 3) && (pressed & 0x1)) {
 					pressed &= ~0x1;
 					direction = 0;
@@ -115,6 +136,7 @@ int main() {
 			}
 		}
 
+		// clr 'toggle', untoggle
 		if ((~pressed & 0x1) && (~btns & 0x1)) {
 			pressed = (pressed & ~0x1) | 0x1;
 		}
@@ -128,9 +150,9 @@ int main() {
 			pressed = (pressed & ~0x8) | 0x8;
 		}
 
-		/* snake_move(head_x, head_y);
-		display_image(gamebuffer, 0);
+		// snake_move(head_x, head_y);
+		// display_image(gamebuffer, 0);
 
-		quicksleep(600000); */
+		// quicksleep(600 000);
 	}
 }
