@@ -54,6 +54,7 @@ extern uint8_t head_x;
 extern uint8_t head_y;
 extern uint8_t get_longer;
 extern void snake_move(uint8_t snake_x, uint8_t snake_y);
+extern void get_apple(void);
 
 
 /* Functions for collision detection and handling */

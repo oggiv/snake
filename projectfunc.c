@@ -297,7 +297,7 @@ unsigned int get_time(){
 
 // Silvia
 // func to call every time apple is eaten
-void get_apple(){
+void get_apple(void){
     /* ~~ when an apple has been consumed ~~ */
 
     /* - generate new apple pos, cannot collide w/ anything else - */
@@ -320,6 +320,8 @@ void get_apple(){
     if ((apples_until_speedup>1)  &&  (apple_count % apples_until_speedup--)==0  &&  (speed_var>max_speed)){
         speed_var--;
     }
+
+    setBlock(gamebuffer, apple_x, apple_y);
 }
 
 // - Game functions -
@@ -395,12 +397,17 @@ void user_isr(){
 						break;
 				}
 
-				/*if (head_x > 45 || head_y > 13) {
+				if (head_x > 45 || head_y > 13) {
 					gameplay = 0;
 				}
 				if (is_occupied(head_x, head_y)) {
-
-				}*/
+					if (head_x == apple_x && head_y == apple_y) {
+						get_apple();
+					}
+					else {
+						gameplay = 0;
+					}
+				}
 
 	            snake_move(head_x, head_y);
 	            display_image(gamebuffer, 0);

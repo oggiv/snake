@@ -84,6 +84,8 @@ int main() {
 
 	gameplay = 1; // start game
 
+	get_apple();
+
 	snake_move(head_x, head_y);
     display_image(gamebuffer, 0);
 	
@@ -150,6 +152,6 @@ int main() {
 		// snake_move(head_x, head_y);
 		// display_image(gamebuffer, 0);
 
-		// quicksleep(600 000);
+		quicksleep(500);
 	}
 }
