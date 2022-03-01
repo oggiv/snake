@@ -409,8 +409,6 @@ void user_isr(){
 						break;
 				}
 
-				setleds(gameplay);
-
 				// allow direction to be changed (S)
 				allow_direction = 1;
 

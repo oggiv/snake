@@ -188,6 +188,9 @@ int main() {
 		display_string(2, str);
 		display_update();
 
+		quicksleep(500);
+
+		while (getbtns() != 0);
 		while (getbtns() == 0);
 	}
 }
