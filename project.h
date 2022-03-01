@@ -70,6 +70,8 @@ void clearPixel(uint8_t *target_array, const unsigned int x, const unsigned int 
 void setBlock(uint8_t *target_array, const unsigned int x, const unsigned int y);
 void clearBlock(uint8_t *target_array, const unsigned int x, const unsigned int y);
 
+void score_to_string(uint16_t score, char* target_string);
+
 /* Read from an interact with IO harware */
 void ioinit(void);
 int getbtns(void);

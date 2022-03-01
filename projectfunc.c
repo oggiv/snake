@@ -67,7 +67,7 @@ void display_init(void) {
 	spi_send_recv(0xAF);
 }
 
-void display_image(const uint8_t *data, int x) {
+void display_image(const uint8_t *data, int x) { // Edited by Viggo
 	int i, j;
 	
 	for(i = 0; i < 4; i++) {
@@ -129,22 +129,6 @@ void display_update(void) {
 
 /* ~~~ OUR STUFF BELOW THIS LINE ~~~ */
 // (V)
-char readArray(const uint8_t *target_array, const int index) {
-
-	unsigned int byte_index = index / 8;
-	unsigned int bit_index = index % 8;
-
-	return (target_array[byte_index] >> bit_index) & 0x01;
-}
-
-void writeArray(uint8_t *target_array, const int index, const int value) {
-
-	unsigned int byte_index = index / 8;
-	unsigned int bit_index = index % 8;
-
-	target_array[byte_index] &= ~(0x01 << bit_index);
-	target_array[byte_index] |= value << bit_index;
-}
 
 // - Graphics functions -
 // Deactivates all pixels in given buffer
@@ -202,6 +186,31 @@ void clearBlock(uint8_t *target_array, const unsigned int x, const unsigned int 
 	}
 }
 
+void score_to_string(uint16_t score, char* target_string) {
+
+	uint8_t shift = 0;
+
+	char a = score / 100;
+	char b = (score - 100*a) / 10;
+	char c = score - 100*a - 10*b;
+
+	a += 48;
+	b += 48;
+	c += 48;
+
+	if (a == '0') {
+		a = ' ';
+		shift++;
+		if (b == '0') {
+			b = ' ';
+			shift++;
+		}
+	}
+
+	target_string[9] = a;
+	target_string[10 - shift] = b;
+	target_string[11 - shift] = c;
+}
 
 // - IO functions - 
 void ioinit(void) {
@@ -400,25 +409,21 @@ void user_isr(){
 						break;
 				}
 
+				setleds(gameplay);
+
 				// allow direction to be changed (S)
 				allow_direction = 1;
 
 				// (V)
 				if (head_x > 45 || head_y > 13) {
 					gameplay = 0;
-					testled = 4;
-					setleds(testled);
 				}
 				if (is_occupied(head_x, head_y)) {
 					if (head_x == apple_x && head_y == apple_y) {
 						get_apple();
-						testled = 1;
-						setleds(testled);
 						
 					}
 					else {
-						testled = 2;
-						setleds(testled);
 						gameplay = 0;
 					}
 				}
