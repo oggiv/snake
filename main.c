@@ -74,7 +74,6 @@ int main() {
 		// (S)
 		time = 0;
 		tmr_countr = 0;
-		countr = 0;
 		apple_count = 0;
 		apples_until_speedup = 3;
 		speed_var = 20;

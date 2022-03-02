@@ -32,7 +32,7 @@ extern uint8_t gameplay;
 /* var to allow dir change */
 extern uint8_t allow_direction;
 extern uint8_t testled;
-unsigned int rand_pos;
+unsigned int rand_int;
 //
 
 

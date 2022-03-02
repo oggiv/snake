@@ -170,4 +170,4 @@ uint8_t speed_var = 20;
 uint8_t gameplay = 0;
 uint8_t allow_direction = 1;
 uint8_t testled = 0;
-unsigned int rand_pos = 0;
+unsigned int rand_int = 0;

@@ -183,63 +183,6 @@ void clr_block(uint8_t* buffer, unsigned int x, unsigned int y){
 }
 
 
-
-/*
-void clearBuffer(uint8_t *target_buffer, unsigned int buffer_length) {
-
-	int bi;
-	for (bi = 0; bi < buffer_length; bi++) {
-		target_buffer[bi] = 255;
-	}
-}
-
-// Activates pixel in given buffer. x is between 0 and 127. y is between 0 and 31.
-void setPixel(uint8_t *target_array, const unsigned int x, const unsigned int y) {
-
-	int byte_index = (((31 - y) / 8) * 128 ) + x; // the byte in the buffer where the pixel resides
-	int bit_index  = (31 - y) % 8; // the index of the bit within the byte where the pixel is represented
-
-	target_array[byte_index] &= ~(0x01 << bit_index);
-
-}
-
-// Deactivates pixel in given buffer. x is between 0 and 127. y is between 0 and 31.
-void clearPixel(uint8_t *target_array, const unsigned int x, const unsigned int y) {
-
-	int byte_index = (((31 - y) / 8) * 128 ) + x; // the byte in the buffer where the pixel resides
-	int bit_index  = (31 - y) % 8; // the index of the bit within the byte where the pixel is represented
-
-	target_array[byte_index] |= 0x01 << bit_index;
-}
-
-void setBlock(uint8_t *target_array, const unsigned int x, const unsigned int y) {
-
-	const unsigned int actual_x = x * 2 + BLOCK_OFFSET;
-	const unsigned int actual_y = y * 2 + BLOCK_OFFSET;
-
-	int ny, nx;
-	for (ny = 0; ny < 2; ny++) {
-		for (nx = 0; nx < 2; nx++) {
-			setPixel(target_array, (nx + actual_x), (ny + actual_y));
-		}
-	}
-}
-
-void clearBlock(uint8_t *target_array, const unsigned int x, const unsigned int y) {
-
-	const unsigned int actual_x = x * 2 + BLOCK_OFFSET;
-	const unsigned int actual_y = y * 2 + BLOCK_OFFSET;
-
-	int ny, nx;
-	for (ny = 0; ny < 2; ny++) {
-		for (nx = 0; nx < 2; nx++) {
-			clearPixel(target_array, (nx + actual_x), (ny + actual_y));
-		}
-	}
-}
-
-*/ 
-
 // (V)
 void score_to_string(uint16_t score, char* target_string) {
 
@@ -304,7 +247,7 @@ void setleds(uint8_t led_value) {
 
 // random position generator (saves x, y pos of the apple)
 // (S)
-void rand_int(){
+void rand_pos(){
 
     // rand int seq of shifted bitw xor, and. 
     // use of Fibonacci LFSRs
@@ -358,15 +301,13 @@ unsigned int get_time(){
 void get_apple(void){
     /* ~~ when an apple has been consumed ~~ */
     /* - generate new apple pos, cannot collide w/ anything else - */
-    rand_int();
+    rand_pos();
     while(is_occupied(apple_x, apple_y)){
-        rand_int();
+        rand_pos();
     }
 
 	// if apple lands on (0, 0)
-	while (apple_x==0  &&  apple_y==0){
-		rand_int();
-	}
+	
 	
     /* - increase apple count - */
     apple_count++;
