@@ -332,21 +332,30 @@ void get_apple(void){
 
 // - Game functions -
 // (V)
+// arg: next coord
+// removes last block if not eaten
 void snake_move(uint8_t snake_x, uint8_t snake_y) {
 
 	uint16_t write_value = 0;
 
+	// points to the head of the snake (the x, y coord of the head)
+	// wraps to beginning if reached end
 	snake_start++;
 	if (snake_start > 704) {
 		snake_start = 0;
 	}
+	
 	snake_coordinates[snake_start] = write_value | (snake_x << 8) | snake_y;
 	set_block(gamebuffer, snake_x, snake_y);
 
-	if (get_longer) {
-		get_longer = 0;
+	if (get_longer) { // if the snake should increase, do not run the nxt blck
+		get_longer = 0; // clr var
 	}
-	else {
+
+	// x coord is byte index
+	// y coord is bit index
+	// 16 bit: 8 msb: x coord, 8 lsbits: y coord
+	else { 
 		uint16_t read_value = snake_coordinates[snake_end];
 		uint8_t clear_x = read_value >> 8;
 		uint8_t clear_y = read_value & 0x00FF;

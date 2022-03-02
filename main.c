@@ -92,6 +92,7 @@ int main() {
 		display_update();
 
 		// (S)
+		while (getbtns() != 0);
 		while(getbtns()==0){ 
 			countr = countr%0xffffffff; // increase countr but no overflow
 			countr++;
