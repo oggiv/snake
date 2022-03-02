@@ -128,17 +128,69 @@ void display_update(void) {
 
 
 /* ~~~ OUR STUFF BELOW THIS LINE ~~~ */
-// (V)
-
+// (S)
 // - Graphics functions -
-// Deactivates all pixels in given buffer
+// clears buffer, all pixels low
+void clear_buffer(uint8_t* buffer, unsigned int buffer_length){
+	int i;
+	for(i = 0; i<buffer_length;i++){
+		*buffer = 255;
+		buffer++;
+	}
+}
+
+// set chosen pixel, using (x, y) coordinates (origo is lower left corner)
+void set_pixel(uint8_t* buffer, unsigned int x, unsigned int y){
+	x = (((31 - y) / 8) * 128 ) + x;
+	y = (31-y)%8;
+
+	buffer[x] &= ~(1 << y); // set bit index to 0 --> it's set
+}
+
+// clears chosen pixel, sets it to "high" == black
+void clr_pixel(uint8_t* buffer, unsigned int x, unsigned int y){
+	x = (((31 - y) / 8) * 128 ) + x;
+	y = (31-y)%8;
+
+	buffer[x] |= (1 << y); // set bit ind to 1 --> black
+}
+
+// uses set pixel to set a block of 2x2 pixels, standard size for this game
+// starts in lower left corner of "block"
+void set_block(uint8_t* buffer, unsigned int x, unsigned int y){
+	unsigned int x_coord = (x*2)+BLOCK_OFFSET;
+	unsigned int y_coord = (y*2)+BLOCK_OFFSET;
+
+	int xi, yi;
+	for(yi=0; yi<2; yi++){
+		for(xi=0; xi<2; xi++){
+			set_pixel(buffer, (xi+x_coord), (yi+y_coord));
+		}
+	}
+}
+
+// clrs chosen block
+void clr_block(uint8_t* buffer, unsigned int x, unsigned int y){
+	unsigned int x_coord = (x*2)+BLOCK_OFFSET;
+	unsigned int y_coord = (y*2)+BLOCK_OFFSET;
+
+	int xi, yi;
+	for(yi=0; yi<2; yi++){
+		for(xi=0; xi<2; xi++){
+			clr_pixel(buffer, (xi+x_coord), (yi+y_coord));
+		}
+	}
+}
+
+
+
+/*
 void clearBuffer(uint8_t *target_buffer, unsigned int buffer_length) {
 
 	int bi;
 	for (bi = 0; bi < buffer_length; bi++) {
 		target_buffer[bi] = 255;
 	}
-
 }
 
 // Activates pixel in given buffer. x is between 0 and 127. y is between 0 and 31.
@@ -186,6 +238,9 @@ void clearBlock(uint8_t *target_array, const unsigned int x, const unsigned int 
 	}
 }
 
+*/ 
+
+// (V)
 void score_to_string(uint16_t score, char* target_string) {
 
 	uint8_t shift = 0;
@@ -194,14 +249,14 @@ void score_to_string(uint16_t score, char* target_string) {
 	char b = (score - 100*a) / 10;
 	char c = score - 100*a - 10*b;
 
-	a += 48;
+	a += 48; // 0's ascii code is 48
 	b += 48;
 	c += 48;
 
-	if (a == '0') {
+	if (a == '0') { // if apples eaten <100
 		a = ' ';
-		shift++;
-		if (b == '0') {
+		shift++; // removes the zero
+		if (b == '0') { // if apples eaten <10
 			b = ' ';
 			shift++;
 		}
@@ -215,9 +270,9 @@ void score_to_string(uint16_t score, char* target_string) {
 // - IO functions - 
 void ioinit(void) {
 	
-	TRISECLR = 0x00FF; // Set LEDs to output
-	TRISFSET = 0x0002; // Set BTN 1 to input
-	TRISDSET = 0x0FE0; // Set BTNs 2-4 to input
+	TRISECLR = 0x00FF; // Set LEDs to output (bits 7:0)
+	TRISFSET = 0x0002; // Set BTN 1 to input (bit 1)
+	TRISDSET = 0x0FE0; // Set BTNs 2-4 to input (bit 11:5)
 
 }
 
@@ -251,15 +306,13 @@ void setleds(uint8_t led_value) {
 // (S)
 void rand_int(){
 
-	rand_pos = countr ^ get_time();
-	
     // rand int seq of shifted bitw xor, and. 
-    // use of Fibonacci's LFSRs
-    rand_pos = (rand_pos>>0)^(rand_pos>>2)^(rand_pos>>5)&0xa55a;
+    // use of Fibonacci LFSRs
+    countr = (countr>>0)^(countr>>2)^(countr>>5)&0xa55a;
 	
     // assign position of apple
-    apple_x = rand_pos%45;
-    apple_y = rand_pos%13;
+    apple_x = countr%45;
+    apple_y = countr%13;
 }
 
 // (S)
@@ -274,7 +327,6 @@ void exception_setup(){
     
     IEC(0) = (1 << 8); // enable int (tmr3 bit 12)
     IPC(2) = 0x1f; // highest priority
-	IPC(3) = 0x1f; // highest priority, tmr3
     
     enable_interrupt(); // call ei 
 }
@@ -288,7 +340,7 @@ void timer_init(){
 
     // 32 bit TMR mode (bit 3 in TxCON - tmr ctrl)
     // T2CONSET = 0x8;
-    PR2 = 3125; // 4 000 000 times (0,05 s is one clk per)
+    PR2 = 3125; // (0,01 s is one clk per) 800 000*256 = 3 125 (80MHz)
     T2CONSET = 0x8070; // bit 15 starts counter, bits 6-4 sets prescale (111 -->> 256:1)
 }
 
@@ -305,12 +357,16 @@ unsigned int get_time(){
 // (S)
 void get_apple(void){
     /* ~~ when an apple has been consumed ~~ */
-
     /* - generate new apple pos, cannot collide w/ anything else - */
     rand_int();
     while(is_occupied(apple_x, apple_y)){
         rand_int();
     }
+
+	// if apple lands on (0, 0)
+	while (apple_x==0  &&  apple_y==0){
+		rand_int();
+	}
 	
     /* - increase apple count - */
     apple_count++;
@@ -319,22 +375,22 @@ void get_apple(void){
     get_longer=1;
 
     /* - increase speed on interval - 
-            - after three apples
+            - after three apples (then two, and lastly one)
             - stop at max speed (speed_var = 1)
+			- anything % 1 is always 0
     */
-
-    if ((speed_var>1)	&&  apples_until_speedup  &&  (apple_count%apples_until_speedup==0)){
+    if ((speed_var>1)	&&  apples_until_speedup  &&  ((apple_count%apples_until_speedup)==0)){
         speed_var--;
 		if(apples_until_speedup>1){
 			apples_until_speedup--;
 		}
     }
 
-    setBlock(gamebuffer, apple_x, apple_y);
+    set_block(gamebuffer, apple_x, apple_y);
 }
 
 // - Game functions -
-// All (V)
+// (V)
 void snake_move(uint8_t snake_x, uint8_t snake_y) {
 
 	uint16_t write_value = 0;
@@ -344,7 +400,7 @@ void snake_move(uint8_t snake_x, uint8_t snake_y) {
 		snake_start = 0;
 	}
 	snake_coordinates[snake_start] = write_value | (snake_x << 8) | snake_y;
-	setBlock(gamebuffer, snake_x, snake_y);
+	set_block(gamebuffer, snake_x, snake_y);
 
 	if (get_longer) {
 		get_longer = 0;
@@ -353,7 +409,7 @@ void snake_move(uint8_t snake_x, uint8_t snake_y) {
 		uint16_t read_value = snake_coordinates[snake_end];
 		uint8_t clear_x = read_value >> 8;
 		uint8_t clear_y = read_value & 0x00FF;
-		clearBlock(gamebuffer, clear_x, clear_y);
+		clr_block(gamebuffer, clear_x, clear_y);
 		snake_end++;
 		if (snake_end > 704) {
 			snake_end = 0;

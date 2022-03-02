@@ -71,6 +71,7 @@ int main() {
 		head_x = 5;
 		head_y = 5;
 
+		// (S)
 		time = 0;
 		tmr_countr = 0;
 		countr = 0;
@@ -79,7 +80,7 @@ int main() {
 		speed_var = 20;
 		allow_direction = 1;
 
-		clearBuffer(gamebuffer, 516);
+		clear_buffer(gamebuffer, 516);
 
 		// show the borders
 		display_image(gamebuffer, 0);
@@ -100,12 +101,12 @@ int main() {
 	    // game border
 		int i;
 		for (i = 0; i < 96; i++) {
-			setPixel(gamebuffer, i, 31);
-			setPixel(gamebuffer, i, 0);
+			set_pixel(gamebuffer, i, 31);
+			set_pixel(gamebuffer, i, 0);
 		}
 		for (i = 0; i < 32; i++) {
-			setPixel(gamebuffer, 0, i);
-			setPixel(gamebuffer, 95, i);
+			set_pixel(gamebuffer, 0, i);
+			set_pixel(gamebuffer, 95, i);
 		}
 
 		gameplay = 1; // start game
@@ -115,10 +116,8 @@ int main() {
 		snake_move(head_x, head_y);
 	    display_image(gamebuffer, 0);
 		
-
 		// -- game play -- 
 		while (gameplay) {
-
 			// turns dot into snake - init code 
 			if (snake_start_length > 0) {
 				get_longer = 1;
@@ -139,9 +138,7 @@ int main() {
 						// (S)
 						allow_direction = 0;
 					}
-
 				}
-
 				if (btns & 0x2) {
 					if ((direction != 2) && (pressed & 0x2) && allow_direction) {
 						pressed &= ~0x2;
@@ -149,7 +146,6 @@ int main() {
 						allow_direction = 0;
 					}
 				}
-
 				if (btns & 0x4) {
 					if ((direction != 1) && (pressed & 0x4) && allow_direction) {
 						pressed &= ~0x4;
@@ -157,7 +153,6 @@ int main() {
 						allow_direction = 0;
 					}
 				}
-
 				if (btns & 0x8) {
 					if ((direction != 0) && (pressed & 0x8) && allow_direction) {
 						pressed &= ~0x8;
@@ -181,7 +176,7 @@ int main() {
 				pressed = (pressed & ~0x8) | 0x8;
 			}
 		}
-
+		
 		char str[] = "   Score:       ";
 		score_to_string(apple_count - 1, str);
 		display_string(1, "   GAME OVER");
