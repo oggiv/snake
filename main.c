@@ -1,3 +1,14 @@
+/* main.c (formerly mipslabmain.c)
+
+   This file written 2015 by Axel Isaksson,
+   Modified 2015, 2017 by F Lundevall
+   Updated 2017-04-21 by F Lundevall
+
+   Modified 2022-03-03 by Viggo Hermansson
+   Modified 2022-03-03 by Silvia Lü
+
+   For copyright and licensing, see file COPYING */
+
 #include <pic32mx.h>
 #include "project.h"
 

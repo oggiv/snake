@@ -1,6 +1,13 @@
-/*	project.h
-	Contains global functions and variables.
-	*/
+/*	project.h (formerly mipslab.h)
+   This file written 2015 by F Lundevall
+   Some parts are original code written by Axel Isaksson
+
+   Updated 2015-08-28 by F Lundevall
+
+   This file modified 2022-03-03 by Viggo Hermansson
+   This file modified 2022-03-03 by Silvia Lü
+
+   For copyright and licensing, see file COPYING */
 
 #include <stdint.h>
 
