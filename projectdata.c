@@ -1,6 +1,11 @@
-/*	projectdata.c
-	Contains data, mostly arrays necessary for the game.
-	*/
+/*	projectdata.c (formerly mipslabdata.c)
+   This file compiled 2015 by F Lundevall
+   from original code written by Axel Isaksson
+
+   This file modified 2022-03-03 by Viggo Hermansson
+   This file modified 2022-03-03 by Silvia Lü
+
+   For copyright and licensing, see file COPYING */
 
 
 #include <stdint.h>   /* Declarations of uint_32 and the like */
