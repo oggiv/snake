@@ -407,7 +407,6 @@ void user_isr(){
 				switch(direction){
 					case 0:
 						if(head_x>45){
-							setleds(1);
 							gameplay=0;
 						}
 						else{
@@ -416,7 +415,6 @@ void user_isr(){
 						break;
 					case 1:
 						if(head_y>13){
-							setleds(2);
 							gameplay=0;
 						}
 						else{
@@ -425,7 +423,6 @@ void user_isr(){
 						break;
 					case 2:
 						if(head_y<1){
-							setleds(4);
 							gameplay=0;
 						}
 						else{
@@ -434,7 +431,6 @@ void user_isr(){
 						break;
 					case 3:
 						if(head_x<1){
-							setleds(8);
 							gameplay=0;
 						}
 						else{
