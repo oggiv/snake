@@ -4,8 +4,8 @@
    Modified 2015, 2017 by F Lundevall
    Updated 2017-04-21 by F Lundevall
 
-   Modified 2022-03-03 by Viggo Hermansson
-   Modified 2022-03-03 by Silvia Lü
+   Modified 2022-03-03 by Viggo Hermansson (V)
+   Modified 2022-03-03 by Silvia Lü (S)
 
    For copyright and licensing, see file COPYING */
 
@@ -94,7 +94,7 @@ int main() {
 
 		display_image(gamebuffer, 0);
 
-		// start screen
+		// start frame
 		display_string(1, "     SNAKE");
 		display_string(2, "  Press button");
 		display_update();
@@ -234,7 +234,7 @@ int main() {
 		display_string(2, str);
 		display_update();
 
-		// display gameover
+		// gameover frame long enough to read before you can skip
 		quicksleep(5000000);
 
 		while (getbtns() != 0);

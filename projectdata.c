@@ -2,8 +2,8 @@
    This file compiled 2015 by F Lundevall
    from original code written by Axel Isaksson
 
-   This file modified 2022-03-03 by Viggo Hermansson
-   This file modified 2022-03-03 by Silvia Lü
+   This file modified 2022-03-03 by Viggo Hermansson (V)
+   This file modified 2022-03-03 by Silvia Lü (S)
 
    For copyright and licensing, see file COPYING */
 

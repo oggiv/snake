@@ -2,8 +2,8 @@
    This file written 2015 by F Lundevall
    Some parts are original code written by Axel Isaksson
 
-   This file modified 2022-03-03 by Viggo Hermansson
-   This file modified 2022-03-03 by Silvia Lü
+   This file modified 2022-03-03 by Viggo Hermansson (V)
+   This file modified 2022-03-03 by Silvia Lü (S)
 
    For copyright and licensing, see file COPYING */
 
@@ -131,7 +131,6 @@ void display_update(void) {
 }
 
 
-
 /* ~~~ OUR STUFF BELOW THIS LINE ~~~ */
 // (S)
 // - Graphics functions -
@@ -186,7 +185,6 @@ void clr_block(uint8_t* buffer, unsigned int x, unsigned int y){
 		}
 	}
 }
-
 
 // (V)
 void score_to_string(uint16_t score, char* target_string) {
@@ -278,7 +276,7 @@ void exception_setup(){
 }
 
 
-// - timer funcs -
+// - timer func -
 // (S)
 // from lab 3
 void timer_init(){

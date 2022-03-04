@@ -4,8 +4,8 @@
 
    Updated 2015-08-28 by F Lundevall
 
-   This file modified 2022-03-03 by Viggo Hermansson
-   This file modified 2022-03-03 by Silvia Lü
+   This file modified 2022-03-03 by Viggo Hermansson (V)
+   This file modified 2022-03-03 by Silvia Lü (S)
 
    For copyright and licensing, see file COPYING */
 
