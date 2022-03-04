@@ -156,6 +156,7 @@ uint16_t snake_end = 0;
 uint8_t get_longer = 0;
 uint8_t head_x = 5;
 uint8_t head_y = 5;
+uint8_t snake_start_length = 3;
 
 // (S)
 unsigned int time = 0;

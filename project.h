@@ -57,6 +57,7 @@ extern uint16_t snake_end;
 extern uint8_t head_x;
 extern uint8_t head_y;
 extern uint8_t get_longer;
+extern uint8_t snake_start_length;
 extern void snake_move(uint8_t snake_x, uint8_t snake_y);
 extern void get_apple(void);
 
@@ -79,7 +80,7 @@ void setleds(uint8_t led_value);
 extern uint8_t led_count;
 
 /* rand pos generator for apple*/
-void rand_int();
+void rand_pos();
 extern unsigned int countr;
 
 /* Control interrupts */
@@ -88,4 +89,3 @@ void exception_setup();
 
 /* Timer setup */
 void timer_init();
-unsigned int get_time();

@@ -57,7 +57,6 @@ int main() {
 	timer_init();
     exception_setup();
 
-
 	// init io, leds
 	ioinit();
 	setleds(0);
@@ -68,37 +67,70 @@ int main() {
 		snake_start = 0;
 		snake_end = 0;
 		get_longer = 0;
+		// start coord, snake length
 		head_x = 5;
 		head_y = 5;
+		snake_start_length = 3; 
 
 		// (S)
-		time = 0;
-		tmr_countr = 0;
 		apple_count = 0;
+		// eat three apples for first speedup, two for nxt
 		apples_until_speedup = 3;
 		speed_var = 20;
 		allow_direction = 1;
 
 		clear_buffer(gamebuffer, 516);
 
-		// show the borders
 		display_image(gamebuffer, 0);
 
-		// init snake length
-		uint8_t snake_start_length = 1;
-
+		// start screen
 		display_string(1, "     SNAKE");
 		display_string(2, "  Press button");
 		display_update();
 
-		// (S)
+		// (S) 
+		// released button, then push it down to start
 		while (getbtns() != 0);
 		while(getbtns()==0){ 
 			countr = countr%0xffffffff; // increase countr but no overflow
 			countr++;
 	    }
 
+		// snake on the side (S)
+		gamebuffer[107] = 0x67;
+		gamebuffer[108] = 0x5b;
+		gamebuffer[109] = 0x5f;
+		gamebuffer[110] = 0x67;
+		gamebuffer[111] = 0x7b;
+		gamebuffer[112] = 0x5b;
+		gamebuffer[113] = 0x67;
+
+		gamebuffer[235] = 0xb7;
+		gamebuffer[236] = 0xb3;
+		gamebuffer[237] = 0xb3;
+		gamebuffer[238] = 0x35;
+		gamebuffer[239] = 0xb6;
+		gamebuffer[240] = 0xb6;
+		gamebuffer[241] = 0x77;
+
+		gamebuffer[363] = 0x6d;
+		gamebuffer[364] = 0x6d;
+		gamebuffer[365] = 0xad;
+		gamebuffer[366] = 0xcc;
+		gamebuffer[367] = 0xad;
+		gamebuffer[368] = 0x6d;
+		gamebuffer[369] = 0x6e;
+		
+		gamebuffer[491] = 0xc3;
+		gamebuffer[492] = 0xfb;
+		gamebuffer[493] = 0xfb;
+		gamebuffer[494] = 0xc3;
+		gamebuffer[495] = 0xfb;
+		gamebuffer[496] = 0xfb;
+		gamebuffer[497] = 0xc3;
+
 	    // game border
+		// draw two x and two y parall lines
 		int i;
 		for (i = 0; i < 96; i++) {
 			set_pixel(gamebuffer, i, 31);
@@ -109,20 +141,23 @@ int main() {
 			set_pixel(gamebuffer, 95, i);
 		}
 
+		// test to find borders (S)
+		// set_block(gamebuffer, 46, 14); // the upper right corner
+
 		gameplay = 1; // start game
 
-		get_apple();
+		// (S) generate the first apple
+		rand_pos();
+		while(is_occupied(apple_x, apple_y)){
+         	rand_pos();
+    	}
+		set_block(gamebuffer, apple_x, apple_y);
 
-		snake_move(head_x, head_y);
-	    display_image(gamebuffer, 0);
+		snake_move(head_x, head_y); //  
+		display_image(gamebuffer, 0);
 		
 		// -- game play -- 
 		while (gameplay) {
-			// turns dot into snake - init code 
-			if (snake_start_length > 0) {
-				get_longer = 1;
-				snake_start_length--;
-			}
 
 			// 'toggle' var for btn
 			int btns = getbtns();
@@ -130,6 +165,7 @@ int main() {
 			// if any is pressd
 			if (btns != 0) {
 				// which btn pressed
+				// BTN1
 				if (btns & 0x1) {
 					// snake cannot double back on itself
 					if ((direction != 3) && (pressed & 0x1) && allow_direction) {
@@ -139,6 +175,7 @@ int main() {
 						allow_direction = 0;
 					}
 				}
+				// BTN2
 				if (btns & 0x2) {
 					if ((direction != 2) && (pressed & 0x2) && allow_direction) {
 						pressed &= ~0x2;
@@ -146,6 +183,7 @@ int main() {
 						allow_direction = 0;
 					}
 				}
+				// BTN3
 				if (btns & 0x4) {
 					if ((direction != 1) && (pressed & 0x4) && allow_direction) {
 						pressed &= ~0x4;
@@ -153,6 +191,7 @@ int main() {
 						allow_direction = 0;
 					}
 				}
+				// BTN4
 				if (btns & 0x8) {
 					if ((direction != 0) && (pressed & 0x8) && allow_direction) {
 						pressed &= ~0x8;
@@ -163,6 +202,7 @@ int main() {
 			}
 
 			// clr 'toggle', untoggle
+			// if button released
 			if ((~pressed & 0x1) && (~btns & 0x1)) {
 				pressed = (pressed & ~0x1) | 0x1;
 			}
@@ -178,12 +218,13 @@ int main() {
 		}
 		
 		char str[] = "   Score:       ";
-		score_to_string(apple_count - 1, str);
+		score_to_string(apple_count, str);
 		display_string(1, "   GAME OVER");
 		display_string(2, str);
 		display_update();
 
-		quicksleep(50000);
+		// display gameover
+		quicksleep(5000000);
 
 		while (getbtns() != 0);
 		while (getbtns() == 0);

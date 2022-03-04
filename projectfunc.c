@@ -141,8 +141,8 @@ void clear_buffer(uint8_t* buffer, unsigned int buffer_length){
 
 // set chosen pixel, using (x, y) coordinates (origo is lower left corner)
 void set_pixel(uint8_t* buffer, unsigned int x, unsigned int y){
-	x = (((31 - y) / 8) * 128 ) + x;
-	y = (31-y)%8;
+	x = (((31 - y) / 8) * 128 ) + x; // byte
+	y = (31-y)%8; // bit
 
 	buffer[x] &= ~(1 << y); // set bit index to 0 --> it's set
 }
@@ -206,7 +206,7 @@ void score_to_string(uint16_t score, char* target_string) {
 	}
 
 	target_string[9] = a;
-	target_string[10 - shift] = b;
+	target_string[10 - shift] = b; // if shift, then overwrites the previous
 	target_string[11 - shift] = c;
 }
 
@@ -248,17 +248,15 @@ void setleds(uint8_t led_value) {
 // random position generator (saves x, y pos of the apple)
 // (S)
 void rand_pos(){
-
-    // rand int seq of shifted bitw xor, and. 
-    // use of Fibonacci LFSRs
+    // modified use of Fibonacci LFSRs and bitwise and (wikipedia)
     countr = (countr>>0)^(countr>>2)^(countr>>5)&0xa55a;
-	
-    // assign position of apple
+
     apple_x = countr%45;
     apple_y = countr%13;
 }
 
 // (S)
+// from lab 3
 void exception_setup(){
 
     /* tmr2: 
@@ -268,7 +266,7 @@ void exception_setup(){
             Sp      IPC(2) <1:0>
     */
     
-    IEC(0) = (1 << 8); // enable int (tmr3 bit 12)
+    IEC(0) = (1 << 8); // enable int 
     IPC(2) = 0x1f; // highest priority
     
     enable_interrupt(); // call ei 
@@ -277,22 +275,12 @@ void exception_setup(){
 
 // - timer funcs -
 // (S)
+// from lab 3
 void timer_init(){
     TMR2 = 0x0; // clr current tmr val
-    TMR3 = 0x0; // clr current tmr val
 
-    // 32 bit TMR mode (bit 3 in TxCON - tmr ctrl)
-    // T2CONSET = 0x8;
     PR2 = 3125; // (0,01 s is one clk per) 800 000*256 = 3 125 (80MHz)
     T2CONSET = 0x8070; // bit 15 starts counter, bits 6-4 sets prescale (111 -->> 256:1)
-}
-
-
-// get current clk value
-// (S)
-unsigned int get_time(){
-    time = TMR2;
-    return time;
 }
 
 
@@ -305,10 +293,6 @@ void get_apple(void){
     while(is_occupied(apple_x, apple_y)){
         rand_pos();
     }
-
-	// if apple lands on (0, 0)
-	
-	
     /* - increase apple count - */
     apple_count++;
 
@@ -320,7 +304,7 @@ void get_apple(void){
             - stop at max speed (speed_var = 1)
 			- anything % 1 is always 0
     */
-    if ((speed_var>1)	&&  apples_until_speedup  &&  ((apple_count%apples_until_speedup)==0)){
+    if ((speed_var>1)  &&  ((apple_count%apples_until_speedup)==0)){
         speed_var--;
 		if(apples_until_speedup>1){
 			apples_until_speedup--;
@@ -332,31 +316,38 @@ void get_apple(void){
 
 // - Game functions -
 // (V)
-// arg: next coord
+// arg: next coord (start is (5, 5))
 // removes last block if not eaten
 void snake_move(uint8_t snake_x, uint8_t snake_y) {
 
+	// the val (x, y coord) to write to snake_array
 	uint16_t write_value = 0;
 
-	// points to the head of the snake (the x, y coord of the head)
+	// points to the head of the snake (the x, y coord of the head) 
+	// first iter = 1
 	// wraps to beginning if reached end
 	snake_start++;
 	if (snake_start > 704) {
 		snake_start = 0;
 	}
-	
+
+	// write the arguments (new pos) into nxt array element
+	// set a block in these coord
 	snake_coordinates[snake_start] = write_value | (snake_x << 8) | snake_y;
 	set_block(gamebuffer, snake_x, snake_y);
 
-	if (get_longer) { // if the snake should increase, do not run the nxt blck
+	// if snake should get longer
+	if (get_longer) { 
 		get_longer = 0; // clr var
 	}
 
+	// if no apple eaten
 	// x coord is byte index
 	// y coord is bit index
 	// 16 bit: 8 msb: x coord, 8 lsbits: y coord
+	// clear the last element
 	else { 
-		uint16_t read_value = snake_coordinates[snake_end];
+		uint16_t read_value = snake_coordinates[snake_end]; // first iter, snake_end = 0
 		uint8_t clear_x = read_value >> 8;
 		uint8_t clear_y = read_value & 0x00FF;
 		clr_block(gamebuffer, clear_x, clear_y);
@@ -383,68 +374,89 @@ uint8_t is_occupied(uint8_t target_x, uint8_t target_y) {
 	else {
 		return 1;
 	}
-
 }
 
 
-// - Interrupt functions -
+// - Interrupt function -
 // (S)
+// if game is on: init snake length (once per gameplay)
+// switch direction, check if lost (out of bounds, collision w itself)
+// check if apple eaten, call get_apple()
 void user_isr(){
     // IFS(0), bit 8, if flag is set
     if (IFS(0)&0x100) {
     	// clr flag
         IFS(0) &= ~0x100;
 	    if (gameplay){
+			// handles speedup
 	        tmr_countr++;
 	        if ((tmr_countr == speed_var)){
 	            tmr_countr = 0;
 
-	            // UDATE FRAME (based on dir fr btn/main) (V)
-				switch (direction) {
+				// init snake length
+				if(snake_start_length>1){
+					get_longer=1;
+					snake_start_length--;
+				}
+				
+				// change direction, if left, down - gameover
+				// (V) and (S)
+				switch(direction){
 					case 0:
-						head_x++;
+						if(head_x>45){
+							setleds(1);
+							gameplay=0;
+						}
+						else{
+							head_x++;	
+						}
 						break;
 					case 1:
-						head_y++;
+						if(head_y>13){
+							setleds(2);
+							gameplay=0;
+						}
+						else{
+							head_y++;
+						}
 						break;
 					case 2:
-						if (head_y == 0) {
-							gameplay = 0;
+						if(head_y<1){
+							setleds(4);
+							gameplay=0;
 						}
-						else {
+						else{
 							head_y--;
 						}
 						break;
 					case 3:
-						if (head_x == 0) {
-							gameplay = 0;
+						if(head_x<1){
+							setleds(8);
+							gameplay=0;
 						}
-						else {
+						else{
 							head_x--;
 						}
 						break;
 				}
 
-				// allow direction to be changed (S)
-				allow_direction = 1;
+				// allow for direction change
+				allow_direction=1;
 
-				// (V)
-				if (head_x > 45 || head_y > 13) {
-					gameplay = 0;
-				}
-				if (is_occupied(head_x, head_y)) {
-					if (head_x == apple_x && head_y == apple_y) {
+				// if snake collides with itself or apple
+				if(is_occupied(head_x, head_y)) {
+					if(head_x==apple_x && head_y==apple_y){
 						get_apple();
-						
 					}
-					else {
-						gameplay = 0;
+					else{
+						gameplay=0;
 					}
 				}
 
-	            snake_move(head_x, head_y);
-	            display_image(gamebuffer, 0);
-	        }
+				// frame update w new values
+				snake_move(head_x, head_y);
+				display_image(gamebuffer, 0);
+			}
 	    }
 	}
 }
