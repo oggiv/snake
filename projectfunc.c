@@ -403,7 +403,7 @@ void user_isr(){
 				}
 				
 				// change direction, if left, down - gameover
-				// (V) and (S)
+				// (S)
 				switch(direction){
 					case 0:
 						if(head_x>45){
@@ -439,7 +439,7 @@ void user_isr(){
 						break;
 				}
 
-				// allow for direction change
+				// allow for direction change (S)
 				allow_direction=1;
 
 				// if snake collides with itself or apple
