@@ -1,5 +1,5 @@
-# snake
-snake game on PIC32
+# Snake
+A Nokia style Snake game for the (Digilent Uno32 ChipKIT)[https://digilent.com/reference/chipkit_uno32/chipkit_uno32_rev_c] development platform made in C and MIPS Assembly with the Digilent Basic I/O Shield.
 
 THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
